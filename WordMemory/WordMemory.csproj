@@ -62,8 +62,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\Word.cs" />
-    <Compile Include="Data\WordData.cs" />
+    <Compile Include="DataObject\WordData.cs" />
     <Compile Include="Forms\AddWordForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -118,7 +117,9 @@
       <DependentUpon>TestWordForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Setting.cs" />
-    <Compile Include="WordDataParser.cs" />
+    <Compile Include="DataParser.cs" />
+    <Compile Include="WordManager.cs" />
+    <Compile Include="WordTable.cs" />
     <EmbeddedResource Include="Forms\AddWordForm.resx">
       <DependentUpon>AddWordForm.cs</DependentUpon>
     </EmbeddedResource>
