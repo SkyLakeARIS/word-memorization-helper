@@ -11,37 +11,36 @@ namespace WordMemory
 {
     public static class FileManager
     {
-        public static List<string> DataFileList = null;
+        public static List<string> DataFileNameList = null;
 
-        private static readonly string FILE_EXTENSTION = ".wmd";
+        private static readonly string FILE_EXTENSTION = "wmd";
+        private static readonly string EXPORT_WORDATA_FILE_EXTENSTION = "expwmd";
         private static readonly string SETTING_FILE_NAME = "setting";
-        private static readonly string SETTING_FILE_EXTENSTION = ".wmsetting";
+        private static readonly string SETTING_FILE_EXTENSTION = "wmsetting";
+        private static readonly string WORDDATA_DIRECTORY_PATH = "//Data";
+        private static readonly string PROGRAM_PATH = "";
 
-        private static string wordDataFilePath;
-        private static string programSettingPath;
         private static string writeBuffer = string.Empty;
 
         public static void Initialize()
         {
-            wordDataFilePath = "//Data//";
-            programSettingPath = String.Empty;
-            DataFileList = new List<string>(1024);
+	        DataFileNameList = new List<string>(2048);
+	        loadFileListFromDataDir();
         }
         public static void Release()
         {
-            DataFileList = null;
-
+	        DataFileNameList.Clear();
+	        DataFileNameList = null;
         }
 
         public static void SaveProgramSettingToFile()
         {
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-
+	        saveFile(PROGRAM_PATH, SETTING_FILE_NAME, SETTING_FILE_EXTENSTION);
         }
 
         public static void LoadProgramSettingFromFile(out string settingString)
         {
-            string filePath = $"{SETTING_FILE_NAME}{SETTING_FILE_EXTENSTION}";
+            string filePath = $"{SETTING_FILE_NAME}.{SETTING_FILE_EXTENSTION}";
             FileStream file = new FileStream(filePath, FileMode.Open);
 
             StreamReader reader = new StreamReader(file);
@@ -58,19 +57,8 @@ namespace WordMemory
         {
             Debug.Assert((!string.IsNullOrWhiteSpace(wordName) || wordName != ""), "wordName은 단어 이름이어야 합니다.");
             Debug.Assert((!string.IsNullOrWhiteSpace(writeBuffer) || writeBuffer != ""), "버퍼에 기록된 내용이 없습니다.");
-            string filePath = $"{wordDataFilePath}{SETTING_FILE_NAME}{SETTING_FILE_EXTENSTION}";
-            FileStream file = new FileStream(filePath, FileMode.Open);
-            StreamWriter writer = new StreamWriter(file);
-            writer.Flush();
 
-            // 데이터가 덮어 써지는지 확인하고 안덮어지면 수정.
-            writer.Write(writeBuffer);
-
-            file.Close();
-            writer.Close();
-            file = null;
-            writer = null;
-            writeBuffer = string.Empty;
+            saveFile(WORDDATA_DIRECTORY_PATH, wordName, FILE_EXTENSTION);
         }
 
         // 단어 이름으로 로드
@@ -78,7 +66,7 @@ namespace WordMemory
         {
             Debug.Assert((!string.IsNullOrWhiteSpace(wordNameToLoad) || wordNameToLoad != ""), "WordNameToLoad 단어 이름이어야 합니다.");
 
-            string filePath = $"{wordDataFilePath}{wordNameToLoad}{FILE_EXTENSTION}";
+            string filePath = $"{WORDDATA_DIRECTORY_PATH}//{wordNameToLoad}.{FILE_EXTENSTION}";
             FileStream file = new FileStream(filePath, FileMode.Open);
 
             StreamReader reader = new StreamReader(file);
@@ -91,25 +79,67 @@ namespace WordMemory
             reader = null;
         }
 
-        public static void ExportWordData()
+        public static bool SaveExportData(string dataToSave)
         {
-            // 할 수 있다면 여기에서 file manager 오픈
-            // 원하는 경로로 지정.
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
+	        Debug.Assert((!string.IsNullOrWhiteSpace(dataToSave) || dataToSave != ""), "저장할 데이터가 없습니다.");
 
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            // 확장자는 프로그램에서 고정시킴.
+            saveFileDialog.DefaultExt = EXPORT_WORDATA_FILE_EXTENSTION;
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+	            if (string.IsNullOrWhiteSpace(saveFileDialog.FileName) || saveFileDialog.FileName == string.Empty)
+	            {
+		            return false;
+	            }
+
+	            Stream stream = saveFileDialog.OpenFile();
+                StreamWriter writer = new StreamWriter(stream);
+
+                writer.Write(dataToSave);
+
+                stream.Close();
+                writer.Close();
+            }
+            else
+            {
+	            return false;
+            }
+
+            return true;
         }
 
-        public static void ImportWordData()
+        public static bool LoadImportDataOrEmpty(out string dataHexString)
         {
-            // 원하는 경로에서 읽기.
-            // 파일 오픈
+	        OpenFileDialog openFileDialog = new OpenFileDialog();
+            // 확장자는 프로그램에서 고정시킴.
+            openFileDialog.DefaultExt = EXPORT_WORDATA_FILE_EXTENSTION;
+            openFileDialog.Filter = $"*.{EXPORT_WORDATA_FILE_EXTENSTION}";
 
-            // 확장자가 맞는지.
+            string result = string.Empty;
+	        if (openFileDialog.ShowDialog() == DialogResult.OK)
+	        {
+		        if (string.IsNullOrWhiteSpace(openFileDialog.FileName) || openFileDialog.FileName == string.Empty)
+		        {
+			        dataHexString = string.Empty;
+			        return false;
+		        }
 
-            // 데이터 로드하여 파일 생성
+		        Stream stream = openFileDialog.OpenFile();
+		        StreamReader reader = new StreamReader(stream);
 
+		        dataHexString = reader.ReadToEnd();
 
-            // 다 끝나면 데이터 파일 다시 로드
+		        stream.Close();
+		        reader.Close();
+	        }
+	        else
+	        {
+		        dataHexString = string.Empty;
+		        return false;
+	        }
+
+            return true;
         }
 
         public static void WriteHexStringAddWhiteSpace(string hexString)
@@ -122,9 +152,30 @@ namespace WordMemory
             writeBuffer += hexString;
         }
 
-        public static void LoadFileListFromDataDir()
+        private static void loadFileListFromDataDir()
         {
+	        string[] files = Directory.GetFiles(WORDDATA_DIRECTORY_PATH);
+	        foreach (string file in files)
+	        {
+		        DataFileNameList.Add(Path.GetFileNameWithoutExtension(file));
+	        }
+        }
 
+        private static void saveFile(string path, string fileName, string extension)
+        {
+	        string filePath = $"{path}//{fileName}.{extension}";
+	        FileStream file = new FileStream(filePath, FileMode.Open);
+	        StreamWriter writer = new StreamWriter(file);
+	        writer.Flush();
+
+	        // 데이터가 덮어 써지는지 확인하고 안덮어지면 수정.
+	        writer.Write(writeBuffer);
+
+	        file.Close();
+	        writer.Close();
+	        file = null;
+	        writer = null;
+	        writeBuffer = string.Empty;
         }
     }
 }
