@@ -64,6 +64,22 @@ namespace WordMemory
                 return;
             }
 
+            if (MeanListView.Items.Count > WordManager.MEAN_COUNT_LIMIT)
+            {
+	            MessageBox.Text = $"뜻 등록은 최대 {WordManager.MEAN_COUNT_LIMIT}개 입니다.";
+	            MessageBox.ForeColor = System.Drawing.Color.Red;
+	            return;
+            }
+
+            if (inputMean.Length > WordManager.MEAN_STRING_LENGTH_LIMIT)
+            {
+	            MessageBox.Text = $"뜻 최대 입력 길이는 {WordManager.MEAN_STRING_LENGTH_LIMIT}자입니다. 현{inputMean.Length}자";
+	            MessageBox.ForeColor = System.Drawing.Color.Red;
+	            return;
+            }
+
+
+
             MeanListView.BeginUpdate();
 
             string meanString = $"({mSelectedWorldClass.WordClassName[0]}){inputMean}";
@@ -97,13 +113,19 @@ namespace WordMemory
         private void btnAddWord_Click(object sender, EventArgs e)
         {
             // 입력 값 체크
-
             // 단어 입력 검사
-            if(string.IsNullOrEmpty(Word.Text) || string.IsNullOrWhiteSpace(Word.Text))
+            if(string.IsNullOrWhiteSpace(Word.Text) || Word.Text == string.Empty)
             {
                 MessageBox.Text = "단어를 입력하세요.";
                 MessageBox.ForeColor = System.Drawing.Color.Red;
                 return;
+            }
+
+            if (Word.Text.Length > WordManager.WORD_STRING_LENGTH_LIMIT)
+            {
+	            MessageBox.Text = $"입력 가능한 단어 길이는 {WordManager.WORD_STRING_LENGTH_LIMIT}자 입니다. 현 {Word.Text.Length}자";
+	            MessageBox.ForeColor = System.Drawing.Color.Red;
+	            return;
             }
 
             // 영어인지 체크. 정규식
@@ -120,21 +142,35 @@ namespace WordMemory
                 return;
             }
 
-            // 단어 추가 및 파일 생성
-            
-            // 파일을 처리하는 클래스를 만드는것도..file Manager : 파일 생성, 삭제, 갱신, 데이터 임포트, 익스포트
-            
-            // 리스트에서 제거 확인 코드
-            MeanListView.BeginUpdate();
-            StringBuilder stringBuilder = new StringBuilder();
-            foreach (var item in MeanListView.Items)
+            // 메모 길이 체크
+            if (Memo.Text.Length > WordManager.MEMO_STRING_LENGTH_LIMIT)
             {
-                stringBuilder.AppendLine(item.ToString());
-
+	            MessageBox.Text = $"메모 입력 가능 길이는 최대 {WordManager.MEMO_STRING_LENGTH_LIMIT}자 입니다. 현{Memo.Text.Length}자.";
+	            MessageBox.ForeColor = System.Drawing.Color.Red;
+	            return;
             }
+
+            List<string> meanList = new List<string>(16);
+            foreach (string mean in MeanListView.Items)
+            {
+                meanList.Add(mean);
+            }
+            WordManager.AddWordData(Word.Text.ToLower(), meanList, Memo.Text);
+            meanList = null;
+
+            // 등록 후, 후처리
+            Word.Text = string.Empty;
+            InputMean.Text = string.Empty;
+            WordClassCombo.SelectedIndex = 0;
+            Memo.Text = string.Empty;
+            MeanListView.BeginUpdate();
+
+            MeanListView.Items.Clear();
+
             MeanListView.EndUpdate();
-            MessageBox.Text = stringBuilder.ToString();
-            MessageBox.ForeColor = System.Drawing.Color.Black;
+
+            MessageBox.Text = $"추가 완료 {Word.Text.ToLower()}";
+            MessageBox.ForeColor = System.Drawing.Color.Green;
         }
 
         private void btnClose_Click(object sender, EventArgs e)
