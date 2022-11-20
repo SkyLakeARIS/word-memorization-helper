@@ -21,14 +21,18 @@ namespace WordMemory
             // initialize data
             WordClassData.Initialize();
             MyConverter.Initialize();
+            FileManager.Initialize();
+            WordManager.Initialize();
+
             MainForm mainForm = new MainForm();
             Application.Run(mainForm);
 
             // save files and release
-
+            // stop refresh timer
             WordClassData.Release();
             MyConverter.Release();
-
+            FileManager.Release();
+            WordTable.Release();
         }
     }
 }
