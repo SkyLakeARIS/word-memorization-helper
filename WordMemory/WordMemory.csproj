@@ -71,6 +71,12 @@
     </Compile>
     <Compile Include="BindingData\WordClassData.cs" />
     <Compile Include="FileManager.cs" />
+    <Compile Include="Forms\CheckImportDataSetting.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\CheckImportDataSetting.Designer.cs">
+      <DependentUpon>CheckImportDataSetting.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FindWordForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -122,6 +128,9 @@
     <Compile Include="WordTable.cs" />
     <EmbeddedResource Include="Forms\AddWordForm.resx">
       <DependentUpon>AddWordForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\CheckImportDataSetting.resx">
+      <DependentUpon>CheckImportDataSetting.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FindWordForm.resx">
       <DependentUpon>FindWordForm.cs</DependentUpon>
