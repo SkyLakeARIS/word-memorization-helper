@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace WordMemory
 {
-    public enum eViewMode
+    public enum EViewMode
     {
+	    SHOW_ONLY_NOT_REMEMBER,
         SHOW_ONLY_REMEMBER,
-        SHOW_ONLY_NOT_REMEMBER,
         SHOW_MIXED
     };
-    public enum eRefreshMode
+    public enum ERefreshMode
     {
         MANUAL,
         TIMER,
@@ -21,35 +22,53 @@ namespace WordMemory
 
     public static class Setting
     {
-        public static eViewMode ViewMode {get; set; }
-        public static eRefreshMode RefreshMode { get; set; }
+        public static EViewMode ViewMode {get; set; }
+        public static ERefreshMode RefreshMode { get; set; }
         public static Int32 RefreshTime { get; set; }
 
-        private static Int32 NumOfWord;
-
+        public static readonly Int32 REFRESH_TIME_DEFAULT = 300;
 
         public static void Initialize()
         {
+	        string filePath = $"{FileManager.SETTING_FILE_NAME}.{FileManager.SETTING_FILE_EXTENSTION}";
+            if (!File.Exists(filePath))
+            {
+	            StreamWriter streamWriter = new StreamWriter(filePath, false);
 
+                ViewMode = EViewMode.SHOW_ONLY_NOT_REMEMBER;
+                RefreshMode = ERefreshMode.TIMER;
+                RefreshTime = REFRESH_TIME_DEFAULT;
+                streamWriter.Write(makeSettingDataToHexString());
+                streamWriter.Close();
+                return;
+            }
+
+            string settingData = string.Empty;
+            FileManager.LoadProgramSettingFromFile(out settingData);
+            DataParser.ParseProgramSettingDataAndSet(settingData);
         }
 
+        public static void SaveSettingData()
+        {
+	        FileManager.SaveProgramSettingToFile(makeSettingDataToHexString());
+        }
 
-        public static Int32 GetWordCount()
+        private static string makeSettingDataToHexString()
         {
-	        return NumOfWord;
-        }
-        public static void IncreaseWordCount()
-        {
-	        ++NumOfWord;
-        }
-        public static void DecreaseWordCount()
-        {
-	        --NumOfWord;
-        }
-        public static void SetWordCount(Int32 numOfWord)
-        {
-            Debug.Assert(numOfWord >= 0, "numOfWord은 음수가 될 수 없습니다.");
-	        NumOfWord = numOfWord;
+	        StringBuilder stringBuilder = new StringBuilder(128);
+
+            // 1. 보기모드 변환
+	        stringBuilder.Append(MyConverter.Int32ToHexX4((Int32) ViewMode));
+	        stringBuilder.Append(DataParser.DATA_SEPARATOR);
+
+            // 2. 갱신모드 변환
+	        stringBuilder.Append(MyConverter.Int32ToHexX4((Int32)RefreshMode));
+	        stringBuilder.Append(DataParser.DATA_SEPARATOR);
+
+            // 3. 타이머 설정 변환
+	        stringBuilder.Append(MyConverter.Int32ToHexX4(RefreshTime));
+
+	        return stringBuilder.ToString();
         }
     }
 }
