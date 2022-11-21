@@ -6,6 +6,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
+using WordMemory.Data;
 
 namespace WordMemory
 {
@@ -13,14 +14,12 @@ namespace WordMemory
     {
         public static List<string> DataFileNameList = null;
 
-        private static readonly string FILE_EXTENSTION = "wmd";
-        private static readonly string EXPORT_WORDATA_FILE_EXTENSTION = "expwmd";
-        private static readonly string SETTING_FILE_NAME = "setting";
-        private static readonly string SETTING_FILE_EXTENSTION = "wmsetting";
-        private static readonly string WORDDATA_DIRECTORY_PATH = "//Data";
-        private static readonly string PROGRAM_PATH = "";
-
-        private static string writeBuffer = string.Empty;
+        public static readonly string FILE_EXTENSTION = "wmd";
+        public static readonly string EXPORT_WORDATA_FILE_EXTENSTION = "expwmd";
+        public static readonly string SETTING_FILE_NAME = "setting";
+        public static readonly string SETTING_FILE_EXTENSTION = "wmsetting";
+        public static readonly string WORDDATA_DIRECTORY_PATH = "Data";
+        //public static readonly string PROGRAM_PATH = "";
 
         public static void Initialize()
         {
@@ -33,32 +32,50 @@ namespace WordMemory
 	        DataFileNameList = null;
         }
 
-        public static void SaveProgramSettingToFile()
+        public static void SaveProgramSettingToFile(string dataToSave)
         {
-	        saveFile(PROGRAM_PATH, SETTING_FILE_NAME, SETTING_FILE_EXTENSTION);
+	        Debug.Assert((!string.IsNullOrWhiteSpace(dataToSave) || dataToSave != ""), "저장할 데이터가 존재하지 않습니다.");
+
+	        string filePath = $"{SETTING_FILE_NAME}.{SETTING_FILE_EXTENSTION}";
+	        // 기존 모든 내용을 무시하고 덮어쓰기.
+	        StreamWriter writer = new StreamWriter(filePath, false);
+
+	        writer.Write(dataToSave);
+
+	        writer.Close();
+	        writer = null;
         }
 
         public static void LoadProgramSettingFromFile(out string settingString)
         {
             string filePath = $"{SETTING_FILE_NAME}.{SETTING_FILE_EXTENSTION}";
-            FileStream file = new FileStream(filePath, FileMode.Open);
+            //FileStream file = new FileStream(filePath, FileMode.Open);
 
-            StreamReader reader = new StreamReader(file);
+            StreamReader reader = new StreamReader(filePath);
+            // 데이터를 처음부터 끝까지 읽어옴.
             settingString = reader.ReadToEnd();
 
             // 데이터가 덮어 써지는지 확인하고 안덮어지면 수정.
-            file.Close();
             reader.Close();
-            file = null;
+            //file.Close();
+ 
+            //file = null;
             reader = null;
         }
 
-        public static void SaveWordDataToFile(string wordName)
+        public static void SaveWordDataToFile(string wordName, string dataToSave)
         {
             Debug.Assert((!string.IsNullOrWhiteSpace(wordName) || wordName != ""), "wordName은 단어 이름이어야 합니다.");
-            Debug.Assert((!string.IsNullOrWhiteSpace(writeBuffer) || writeBuffer != ""), "버퍼에 기록된 내용이 없습니다.");
+            Debug.Assert((!string.IsNullOrWhiteSpace(dataToSave) || dataToSave != ""), "저장할 데이터가 없습니다.");
 
-            saveFile(WORDDATA_DIRECTORY_PATH, wordName, FILE_EXTENSTION);
+            string filePath = $"{WORDDATA_DIRECTORY_PATH}//{wordName}.{FILE_EXTENSTION}";
+            // 기존 모든 내용을 무시하고 덮어쓰기.
+            StreamWriter writer = new StreamWriter(filePath, false);
+
+            writer.Write(dataToSave);
+
+            writer.Close();
+            writer = null;
         }
 
         // 단어 이름으로 로드
@@ -67,16 +84,24 @@ namespace WordMemory
             Debug.Assert((!string.IsNullOrWhiteSpace(wordNameToLoad) || wordNameToLoad != ""), "WordNameToLoad 단어 이름이어야 합니다.");
 
             string filePath = $"{WORDDATA_DIRECTORY_PATH}//{wordNameToLoad}.{FILE_EXTENSTION}";
-            FileStream file = new FileStream(filePath, FileMode.Open);
-
-            StreamReader reader = new StreamReader(file);
+            //FileStream file = new FileStream(filePath, FileMode.Open);
+            StreamReader reader = new StreamReader(filePath);
             wordDataString = reader.ReadToEnd();
 
             // 데이터가 덮어 써지는지 확인하고 안덮어지면 수정.
-            file.Close();
             reader.Close();
-            file = null;
+            //file.Close();
+
+            //file = null;
             reader = null;
+        }
+
+        public static void RemoveDataFile(string wordNameToRemove)
+        {
+	        Debug.Assert((!string.IsNullOrWhiteSpace(wordNameToRemove) || wordNameToRemove != ""), "wordNameToRemove 단어 이름이어야 합니다.");
+
+	        string filePath = $"{WORDDATA_DIRECTORY_PATH}//{wordNameToRemove}.{FILE_EXTENSTION}";
+            File.Delete(filePath);
         }
 
         public static bool SaveExportData(string dataToSave)
@@ -92,13 +117,10 @@ namespace WordMemory
 	            {
 		            return false;
 	            }
-
-	            Stream stream = saveFileDialog.OpenFile();
-                StreamWriter writer = new StreamWriter(stream);
+	            StreamWriter writer = new StreamWriter(saveFileDialog.FileName, false);
 
                 writer.Write(dataToSave);
 
-                stream.Close();
                 writer.Close();
             }
             else
@@ -116,66 +138,49 @@ namespace WordMemory
             openFileDialog.DefaultExt = EXPORT_WORDATA_FILE_EXTENSTION;
             openFileDialog.Filter = $"*.{EXPORT_WORDATA_FILE_EXTENSTION}";
 
-            string result = string.Empty;
-	        if (openFileDialog.ShowDialog() == DialogResult.OK)
+            dataHexString = string.Empty;
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
 	        {
 		        if (string.IsNullOrWhiteSpace(openFileDialog.FileName) || openFileDialog.FileName == string.Empty)
 		        {
-			        dataHexString = string.Empty;
 			        return false;
 		        }
 
-		        Stream stream = openFileDialog.OpenFile();
-		        StreamReader reader = new StreamReader(stream);
+		        //Stream stream = openFileDialog.OpenFile();
+		        StreamReader reader = new StreamReader(openFileDialog.FileName);
 
 		        dataHexString = reader.ReadToEnd();
 
-		        stream.Close();
+		       // stream.Close();
 		        reader.Close();
 	        }
 	        else
 	        {
-		        dataHexString = string.Empty;
 		        return false;
 	        }
 
             return true;
         }
 
-        public static void WriteHexStringAddWhiteSpace(string hexString)
-        {
-            writeBuffer += $" {hexString}";
-        }
-
-        public static void WriteHexString(string hexString)
-        {
-            writeBuffer += hexString;
-        }
-
         private static void loadFileListFromDataDir()
         {
+            if(!Directory.Exists(WORDDATA_DIRECTORY_PATH))
+            {
+	            Directory.CreateDirectory(WORDDATA_DIRECTORY_PATH);
+            }
+
 	        string[] files = Directory.GetFiles(WORDDATA_DIRECTORY_PATH);
+	        if (files.Length <= 0)
+	        {
+                // 아직 생성한 데이터가 없음.
+		        return;
+	        }
+
 	        foreach (string file in files)
 	        {
 		        DataFileNameList.Add(Path.GetFileNameWithoutExtension(file));
 	        }
-        }
-
-        private static void saveFile(string path, string fileName, string extension)
-        {
-	        string filePath = $"{path}//{fileName}.{extension}";
-	        FileStream file = new FileStream(filePath, FileMode.Open);
-	        StreamWriter writer = new StreamWriter(file);
-	        writer.Flush();
-
-	        // 데이터가 덮어 써지는지 확인하고 안덮어지면 수정.
-	        writer.Write(writeBuffer);
-
-	        file.Close();
-	        writer.Close();
-	        file = null;
-	        writer = null;
-	        writeBuffer = string.Empty;
         }
     }
 }
