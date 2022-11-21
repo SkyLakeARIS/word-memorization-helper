@@ -7,7 +7,7 @@ using WordMemory.Data;
 
 namespace WordMemory.Data
 {
-    public enum eRememberType
+    public enum ERememberType
     {
         NOT_REMEMBER,
         REMEMBER
@@ -16,67 +16,66 @@ namespace WordMemory.Data
     public class WordData
     {
 	    public Int32 Hash { get; }
+	    public string WordName { get; }
 
-	    private string mWordName;
-	    //{
-		   // get { return WordName; }
-		   // set { WordName = value; } // init으로
-	    //}
-	    public List<string> MeanList { get; set; }
+        public List<string> MeanList { get; set; }
 
-	    public eRememberType RememberType { get; set; }
+	    public ERememberType RememberType { get; set; }
+
 	    public string Memo { get; set; }
 
-	    public bool mbModified;
+	    public bool IsModified { get; private set; }
 
-        public WordData(Int32 hash, string wordName, List<string> meanList, eRememberType rememberType, string memo)
+
+
+        public WordData(Int32 hash, string wordName, List<string> meanList, ERememberType rememberType, string memo)
         {
 	        Hash = hash;
-	        mWordName = wordName;
+	        WordName = wordName;
             MeanList = meanList;
 	        RememberType = rememberType;
 	        Memo = memo;
             // 처음 생성되면 저장되어야 하므로, 체크해야 한다.
-	        mbModified = true;
+	        IsModified = true;
         }
 
         //public WordData(string wordName, List<string> meanList, string memo)
-	       // : this(/*해시 계산 후 반환*/, wordName, meanList, eRememberType.NOT_REMEMBER, memo)
+	       // : this(/*해시 계산 후 반환*/, wordName, meanList, ERememberType.NOT_REMEMBER, memo)
         //{ }
 
         public WordData(Int32 hash, string wordName, List<string> meanList, string memo)
-            : this(hash, wordName, meanList, eRememberType.NOT_REMEMBER, memo)
+            : this(hash, wordName, meanList, ERememberType.NOT_REMEMBER, memo)
         { }
 
-        public string GetWordName()
-        {
-	        return mWordName;
-        }
+        //public string GetWordName()
+        //{
+	       // return mWordName;
+        //}
 
 
         public void UpdateMeanData(List<string> newMeanList)
         {
             MeanList.Clear();
             MeanList = newMeanList;
-            mbModified = true;
+            IsModified = true;
         }
 
-        public void UpdateRememberType(eRememberType newRememberType)
+        public void UpdateRememberType(ERememberType newRememberType)
         {
 	        RememberType = newRememberType;
-	        mbModified = true;
+	        IsModified = true;
         }
 
         public void UpdateMemo(string newMemo)
         {
 	        Memo = newMemo;
-	        mbModified = true;
+	        IsModified = true;
         }
 
-        public bool IsModified()
-        {
-            return mbModified;
-        }
+        //public bool IsModified()
+        //{
+        //    return IsModified;
+        //}
 
     }
 
