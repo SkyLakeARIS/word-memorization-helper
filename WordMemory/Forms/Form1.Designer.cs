@@ -273,7 +273,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.WordFirst);
             this.Name = "MainForm";
-            this.Text = "Word Memory";
+            this.Text = "단어 암기 도우미";
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

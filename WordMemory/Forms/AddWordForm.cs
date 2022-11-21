@@ -15,15 +15,6 @@ namespace WordMemory
     public partial class AddWordForm : Form
     {
 
-        //public const WordClassData[] WordClassTypes = new WordClassData[8] {
-        //WordClassData(eWordClass.NOUN, "명사" ),
-        //WordClassData(eWordClass.VERB, "동사" ),
-        //WordClassData(eWordClass.ADJECTIVE, "형용사" ),
-        //WordClassData(eWordClass.PREPOSITION, "전치사" ),
-        //WordClassData(eWordClass.CONJUNCTION, "접속사" ),
-        //WordClassData(eWordClass.PRONOUN, "대명사" ),
-        //WordClassData(eWordClass.INTERJECTION, "감탄사" )
-        //};
         private WordClassData mSelectedWorldClass;
 
         public AddWordForm()
@@ -57,7 +48,7 @@ namespace WordMemory
                 return;
             }
 
-            if(mSelectedWorldClass.WordClassType == eWordClass.NULL)
+            if(mSelectedWorldClass.WordClassType == EWordClass.NULL)
             {
                 MessageBox.Text = "품사를 설정해주세요.";
                 MessageBox.ForeColor = System.Drawing.Color.Red;
@@ -150,12 +141,22 @@ namespace WordMemory
 	            return;
             }
 
-            List<string> meanList = new List<string>(16);
-            foreach (string mean in MeanListView.Items)
+            List<string> meanList = new List<string>(WordManager.MEAN_COUNT_LIMIT);
+            for (Int32 index = 0; index < MeanListView.Items.Count; ++index)
             {
-                meanList.Add(mean);
+	            meanList.Add(MeanListView.Items[index].Text);
             }
-            WordManager.AddWordData(Word.Text.ToLower(), meanList, Memo.Text);
+
+            if (WordManager.AddWordData(Word.Text.ToLower(), meanList, Memo.Text))
+            {
+	            MessageBox.Text = $"추가 완료 {Word.Text.ToLower()}";
+	            MessageBox.ForeColor = System.Drawing.Color.Green;
+            }
+            else
+            {
+	            MessageBox.Text = $"추가 실패 {Word.Text.ToLower()}";
+	            MessageBox.ForeColor = System.Drawing.Color.Green;
+            }
             meanList = null;
 
             // 등록 후, 후처리
@@ -168,9 +169,6 @@ namespace WordMemory
             MeanListView.Items.Clear();
 
             MeanListView.EndUpdate();
-
-            MessageBox.Text = $"추가 완료 {Word.Text.ToLower()}";
-            MessageBox.ForeColor = System.Drawing.Color.Green;
         }
 
         private void btnClose_Click(object sender, EventArgs e)
