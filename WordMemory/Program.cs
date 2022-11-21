@@ -22,6 +22,8 @@ namespace WordMemory
             WordClassData.Initialize();
             MyConverter.Initialize();
             FileManager.Initialize();
+            WordTable.Initialize();
+            Setting.Initialize();
             WordManager.Initialize();
 
             MainForm mainForm = new MainForm();
@@ -32,7 +34,9 @@ namespace WordMemory
             WordClassData.Release();
             MyConverter.Release();
             FileManager.Release();
+            WordManager.Release();
             WordTable.Release();
+
         }
     }
 }
