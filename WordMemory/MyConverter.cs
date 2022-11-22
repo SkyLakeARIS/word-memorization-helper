@@ -1,33 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
 using System.Text;
-using System.Threading.Tasks;
 using WordMemory.Data;
 
 namespace WordMemory
 {
+	 /*
+	  *  hex string <-> Int32, string 변환
+	  *  단어 데이터를 hex string으로 변환하는 클래스
+	  */
     public static class MyConverter
     {
-        private static StringBuilder stringBuilder = null;
-
-        public static void Initialize()
-        {
-	        stringBuilder = new StringBuilder(2048);
-        }
-        public static void Release()
-        {
-	        stringBuilder.Clear();
-            stringBuilder = null;
-        }
-
+		/*
+		*  단어 데이터를 파일로 내보내기 위해 hex string으로 변환합니다.
+		*/
         public static string WordDataToHexString(WordData wordToConvert)
         {
-            // 내용물 제거.
-	        stringBuilder.Clear();
-
+	        StringBuilder stringBuilder = new StringBuilder(2048);
 	        // 1. 해시 변환
-            stringBuilder.Append(Int32ToHexX4(wordToConvert.Hash));
+            stringBuilder.Append(UInt32ToHexX4(wordToConvert.Hash));
             stringBuilder.Append(DataParser.DATA_SEPARATOR);
 
             // 2. 암기 여부 변환
@@ -59,9 +50,12 @@ namespace WordMemory
             return stringBuilder.ToString();
         }
 
+        /*
+		*  받은 hex string을 일반 string 데이터로 변환하여 반환합니다.
+		*/
         public static string HexToString(string hexString)
         {
-	        stringBuilder.Clear();
+	        StringBuilder stringBuilder = new StringBuilder(256);
 
             hexString = hexString.Trim();
             string[] splited = hexString.Split(' ');
@@ -74,33 +68,65 @@ namespace WordMemory
             return stringBuilder.ToString();
         }
 
+        /*
+		*  받은 hex string을 일반 Int32 데이터로 변환하여 반환합니다.
+		*/
         public static Int32 HexToInt32(string hexString)
         {
             return Convert.ToInt32(hexString, 16);
         }
 
+        /*
+		*  받은 hex string을 일반 UInt32 데이터로 변환하여 반환합니다.
+		*/
+        public static UInt32 HexToUInt32(string hexString)
+        {
+	        return Convert.ToUInt32(hexString, 16);
+        }
+        /*
+		*  받은 string을 hex string 데이터로 변환하여 반환합니다.
+		*/
         public static string StringToHex(string stringToConvert)
         {
             return stringToHex(stringToConvert).Trim();
         }
 
+        /*
+		*  받은 string을 hex string 데이터로 변환하여 반환합니다.
+        *  변환한 데이터 앞에 변환된 데이터의 길이가 hex로 변환되어 덧붙여집니다.
+		*/
         public static string StringToHexAddLength(string stringToConvert)
         {
+            Debug.Assert(false, "해당 프로그램에서 사용하지 않는 파일 형식의 동작입니다. 한번 더 확인하세요.");
             string result = stringToHex(stringToConvert.Trim());
 
             return $"{result.Length.ToString("X4")} {result}";
         }
 
-
+        /*
+		*  받은 Int32를 hex string 데이터로 변환하여 반환합니다.
+        *  4자리 hex로 변환됩니다.
+		*/
         public static string Int32ToHexX4(Int32 intToConvert)
         {
             return intToConvert.ToString("X4");
         }
 
-        // 코드 중복 제거
+        /*
+		*  받은 UInt32를 hex string 데이터로 변환하여 반환합니다.
+        *  4자리 hex로 변환됩니다.
+		*/
+        public static string UInt32ToHexX4(UInt32 intToConvert)
+        {
+	        return intToConvert.ToString("X4");
+        }
+        /*
+		 *  받은 string을 hex string 데이터로 변환하여 반환합니다.
+         *  내부에서 코드 중복 제거용으로 사용
+		 */
         private static string stringToHex(string stringToConvert)
         {
-	        stringBuilder.Clear();
+	        StringBuilder stringBuilder = new StringBuilder(256);
 
             foreach (char ch in stringToConvert)
             {
@@ -108,8 +134,6 @@ namespace WordMemory
 	            stringBuilder.Append(' ');
             }
 
-            string hexString = stringBuilder.ToString();
-            
             return stringBuilder.ToString();
         }
     }
