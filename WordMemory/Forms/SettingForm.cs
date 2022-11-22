@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace WordMemory
@@ -56,7 +49,7 @@ namespace WordMemory
             }
 
             // 3. 타이머 값 초기화
-            InputTimerCount.Value = Setting.RefreshTime;
+            InputTimerCount.Value = Setting.GetRefreshTimeMinutes();
 
             MessageBox.Text = "설정이 로드되었습니다.";
             MessageBox.ForeColor = Color.Green;
@@ -90,7 +83,7 @@ namespace WordMemory
 	        }
 
             // 3. 타이머 값 적용
-            Setting.RefreshTime = (Int32)InputTimerCount.Value;
+            Setting.RefreshTimeMilliseconds = (Int32)InputTimerCount.Value;
 
             // 4. 설정 값 저장
             Setting.SaveSettingData();
@@ -112,25 +105,6 @@ namespace WordMemory
         private void btnImportWordData_Click(object sender, EventArgs e)
         {
 	        WordManager.ImportWordData();
-            // export 데이터를 로드해서 데이터 파일로 분리 저장 후, 데이터 파일 재로드
-
-
-            //OpenFileDialog openFileDialog = new OpenFileDialog();
-            //openFileDialog.ShowDialog(this);
-            //if(string.IsNullOrEmpty(openFileDialog.FileName) || string.IsNullOrWhiteSpace(openFileDialog.FileName))
-            //{
-            //    return;
-            //}
-            //Stream file =  openFileDialog.OpenFile();
-
-            //StreamReader reader = new StreamReader(file);
-
-            //string line = MyConverter.HexToString(reader.ReadLine());
-
-            //MessageBox.Text = line;
-
-            //file.Close();
-            //reader.Close();
         }
 
     }

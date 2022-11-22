@@ -1,11 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using WordMemory.BindingData;
 
@@ -16,7 +10,7 @@ namespace WordMemory
     {
 
         private WordClassData mSelectedWorldClass;
-
+        private bool mIsAddWord;
         public AddWordForm()
         {
             InitializeComponent();
@@ -25,7 +19,18 @@ namespace WordMemory
         private void AddWordForm_Load(object sender, EventArgs e)
         {
             // 초기 세팅 
+
+            mIsAddWord = false;
+
             // 메세지나 그런 안내문자 그리고 기본 값 세팅
+            ColumnHeader header1 = new ColumnHeader();
+            header1.Text = "";
+            header1.Name = "Mean";
+            header1.Width = WordManager.MEAN_STRING_LENGTH_LIMIT;
+
+            MeanListView.View = View.Details;
+            MeanListView.Columns.Add(header1);
+            MeanListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
 
             // 콤보 박스 데이터 바인드
             WordClassCombo.DataSource = WordClassData.DataList;
@@ -55,14 +60,14 @@ namespace WordMemory
                 return;
             }
 
-            if (MeanListView.Items.Count > WordManager.MEAN_COUNT_LIMIT)
+            if (MeanListView.Items.Count >= WordManager.MEAN_COUNT_LIMIT)
             {
 	            MessageBox.Text = $"뜻 등록은 최대 {WordManager.MEAN_COUNT_LIMIT}개 입니다.";
 	            MessageBox.ForeColor = System.Drawing.Color.Red;
 	            return;
             }
 
-            if (inputMean.Length > WordManager.MEAN_STRING_LENGTH_LIMIT)
+            if (inputMean.Length >= WordManager.MEAN_STRING_LENGTH_LIMIT)
             {
 	            MessageBox.Text = $"뜻 최대 입력 길이는 {WordManager.MEAN_STRING_LENGTH_LIMIT}자입니다. 현{inputMean.Length}자";
 	            MessageBox.ForeColor = System.Drawing.Color.Red;
@@ -169,12 +174,21 @@ namespace WordMemory
             MeanListView.Items.Clear();
 
             MeanListView.EndUpdate();
+
+            mIsAddWord = true;
+
         }
 
         private void btnClose_Click(object sender, EventArgs e)
         {
-            DialogResult = DialogResult.Cancel;
-            return;
+	        if (mIsAddWord)
+	        {
+                DialogResult = DialogResult.OK;
+	        }
+	        else
+	        {
+		        DialogResult = DialogResult.Cancel;
+	        }
         }
 
         private void MeanListView_MouseDoubleClick(object sender, MouseEventArgs e)

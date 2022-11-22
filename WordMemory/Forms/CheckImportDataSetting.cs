@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace WordMemory.Forms
@@ -19,6 +13,12 @@ namespace WordMemory.Forms
 
     public partial class CheckImportDataSetting : Form
     {
+	    public string WordName
+	    {
+		    private get;
+		    set;
+	    }
+
         public CheckImportDataSetting()
         {
             InitializeComponent();
@@ -27,6 +27,8 @@ namespace WordMemory.Forms
         private void CheckImportDataSetting_Load(object sender, EventArgs e)
         {
             rbtnUseOriginalData.Checked = true;
+
+            Word.Text = WordName;
 
             MessageBox.Text = "세가지 중 하나를 선택하여 데이터를 임포트합니다.";
             MessageBox.ForeColor = Color.Green;
@@ -67,6 +69,8 @@ namespace WordMemory.Forms
 	        }
 
             WordManager.SetImportOption(option);
+
+            DialogResult = DialogResult.OK;
         }
 
     }

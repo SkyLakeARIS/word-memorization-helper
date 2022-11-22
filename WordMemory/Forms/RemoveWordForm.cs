@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using WordMemory.Data;
 
@@ -14,6 +7,7 @@ namespace WordMemory
     public partial class RemoveWordForm : Form
     {
 	    private WordData mfoundData;
+	    private bool mIsRemoveWord;
 
         public RemoveWordForm()
         {
@@ -23,8 +17,18 @@ namespace WordMemory
         private void RemoveWordForm_Load(object sender, EventArgs e)
         {
             // 초기 설정
+            ColumnHeader header1 = new ColumnHeader();
+            header1.Text = "";
+            header1.Name = "Mean";
+            header1.Width = WordManager.MEAN_STRING_LENGTH_LIMIT;
+
+            MeanListView.View = View.Details;
+            MeanListView.Columns.Add(header1);
+            MeanListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
 
             MeanListView.Items.Clear();
+
+            mIsRemoveWord = false;
         }
 
         private void btnFindWord_Click(object sender, EventArgs e)
@@ -44,7 +48,7 @@ namespace WordMemory
             }
 
             // 검색 후, 결과 표시
-            if (WordManager.FindWordData(Word.Text.ToLower(), out mfoundData))
+            if (WordManager.FindWordDataOrNull(Word.Text.ToLower(), out mfoundData))
             {
 	            Word.Text = mfoundData.WordName;
 
@@ -114,14 +118,20 @@ namespace WordMemory
 
             Memo.Text = string.Empty;
             mfoundData = null;
+            mIsRemoveWord = true;
         }
 
         private void btnClose_Click(object sender, EventArgs e)
         {
 	        mfoundData = null;
-
-            // 닫기
-            DialogResult = DialogResult.Cancel;
+	        if (mIsRemoveWord)
+	        {
+		        DialogResult = DialogResult.OK;
+	        }
+	        else
+	        {
+		        DialogResult = DialogResult.Cancel;
+	        }
         }
 
         private void Word_KeyPress(object sender, KeyPressEventArgs e)
@@ -132,5 +142,6 @@ namespace WordMemory
                 btnFindWord_Click(sender, e);
             }
         }
+
     }
 }

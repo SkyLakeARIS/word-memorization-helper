@@ -1,11 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using WordMemory.BindingData;
 using WordMemory.Data;
@@ -14,7 +8,8 @@ namespace WordMemory
 {
     public partial class FindWordForm : Form
     {
-	    private WordData foundData;
+	    private WordData mFoundData;
+	    private bool mIsModifiyWord;
         public FindWordForm()
         {
             InitializeComponent();
@@ -23,20 +18,33 @@ namespace WordMemory
         private void FindWordForm_Load(object sender, EventArgs e)
         {
             // 초기 세팅
+            ColumnHeader header1 = new ColumnHeader();
+            header1.Text = "";
+            header1.Name = "Mean";
+            header1.Width = WordManager.MEAN_STRING_LENGTH_LIMIT;
+
+            MeanListView.View = View.Details;
+            MeanListView.Columns.Add(header1);
+            MeanListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+
             // 콤보 박스 데이터 바인드
             WordClassCombo.DataSource = WordClassData.DataList;
             WordClassCombo.DisplayMember = "WordClassName";
             WordClassCombo.ValueMember = "WordClassName";
 
-            foundData = null;
+            rbtnRemember.Checked = false;
+            rbtnNotRemember.Checked = false;
+
+            mFoundData = null;
             // 리스트 뷰 초기화 
             // 빈 데이터가 하나 들어있는 상태이기 때문에 나중에 일일이 처리해줄바에
             // 비우는게 좋음.
             MeanListView.Items.Clear();
 
+            mIsModifiyWord = false;
         }
 
-        private void btnFindWord_Click(object sender, EventArgs e)
+    private void btnFindWord_Click(object sender, EventArgs e)
         {
             if(string.IsNullOrWhiteSpace(Word.Text) || Word.Text == string.Empty)
             {
@@ -53,21 +61,30 @@ namespace WordMemory
             }
 
             // 검색 후, 결과 표시
-            if (WordManager.FindWordData(Word.Text.ToLower(), out foundData))
+            if (WordManager.FindWordDataOrNull(Word.Text.ToLower(), out mFoundData))
             {
-	            Word.Text = foundData.WordName;
+	            Word.Text = mFoundData.WordName;
 
 	            MeanListView.BeginUpdate();
 
 	            MeanListView.Items.Clear();
-                foreach (string mean in foundData.MeanList)
+                foreach (string mean in mFoundData.MeanList)
 	            {
 		            MeanListView.Items.Add(mean);
 	            }
 
                 MeanListView.EndUpdate();
 
-                Memo.Text = foundData.Memo;
+                Memo.Text = mFoundData.Memo;
+
+                if (mFoundData.RememberType == ERememberType.REMEMBER)
+                {
+	                rbtnRemember.Checked = true;
+                }
+                else
+                {
+	                rbtnNotRemember.Checked = true;
+                }
 
                 // 안내 메세지
                 MessageBox.Text = "수정시 단어 이름을 제외한 나머지 내용만 반영됩니다.";
@@ -83,13 +100,20 @@ namespace WordMemory
 
         private void btnClose_Click(object sender, EventArgs e)
         {
-	        foundData = null;
-            DialogResult = DialogResult.Cancel;
+	        mFoundData = null;
+	        if (mIsModifiyWord)
+	        {
+		        DialogResult = DialogResult.OK;
+	        }
+	        else
+	        {
+		        DialogResult = DialogResult.Cancel;
+	        }
         }
 
         private void btnAddMean_Click(object sender, EventArgs e)
         {
-	        if (foundData == null)
+	        if (mFoundData == null)
 	        {
 		        MessageBox.Text = "단어를 먼저 검색하여 데이터를 초기화하세요.";
 		        MessageBox.ForeColor = System.Drawing.Color.Red;
@@ -160,15 +184,7 @@ namespace WordMemory
 	            return;
             }
 
-            // 데이터가 변경된 것이 있는지 체크. 
-
-            // 단어명은 체크하지 않는다. (그렇다면 입력되서 변경된 단어 이름을 따로 알아낼 방법 고려)
-
-            // 변경되었으면 더티비트 체크
-
-            // 해시에서 가져온 워드 데이터이면, 왠지 foundData도 같은 메모리를 가질 것 같음.
-            // 따라서 테스트에서 update 메서드만 호출해서 반영되는지 확인 필요하고 되면, 워드 매니저, 테이블에서 업데이트 함수 제거
-            // 또, 된다는 가정하에, 입력 데이터가 바뀌면 이벤트 호출을 통해서 어느 부분이 변경되었는지 체크 후, 그 부분만 업데이트.
+            // 단어명은 업데이트X
 
             // 뜻 업데이트
             List<string> meanList = new List<string>(WordManager.MEAN_COUNT_LIMIT);
@@ -177,19 +193,25 @@ namespace WordMemory
                 meanList.Add(MeanListView.Items[index].Text);
             }
 
-            foundData.UpdateMeanData(meanList);
+            mFoundData.UpdateMeanData(meanList);
             meanList = null;
 
-
-            // 암기 여부도 수정할 수 있도록 제공.
+            // 메모 업데이트
+            mFoundData.UpdateMemo(Memo.Text);
 
             // 암기 여부 업데이트
-            //foundData.UpdateRememberType(foundData.RememberType);
+            ERememberType isRemember = ERememberType.REMEMBER;
+            if (rbtnNotRemember.Checked)
+            {
+	            isRemember = ERememberType.NOT_REMEMBER;
+            }
 
-            // 메모 업데이트
-            foundData.UpdateMemo(Memo.Text);
+            if (isRemember != mFoundData.RememberType)
+            {
+	            mFoundData.UpdateRememberType(isRemember);
+            }
 
-            WordManager.UpdateWordData(foundData);
+            WordManager.UpdateWordData(mFoundData);
 
             // 후처리
             Word.Text = string.Empty;
@@ -204,7 +226,8 @@ namespace WordMemory
 
             WordClassCombo.SelectedIndex = 0;
             InputMean.Text = string.Empty;
-            foundData = null;
+            mFoundData = null;
+            mIsModifiyWord = true;
 
             MessageBox.Text = $"수정 되었습니다.";
             MessageBox.ForeColor = System.Drawing.Color.Green;
@@ -236,6 +259,16 @@ namespace WordMemory
 
             MessageBox.Text = selectedData;
             MessageBox.ForeColor = System.Drawing.Color.Green;
+        }
+
+        private void rbtnRememberFirst_CheckedChanged(object sender, EventArgs e)
+        {
+	        rbtnRemember.Checked = true;
+        }
+
+        private void rbtnNotRememberFirst_CheckedChanged(object sender, EventArgs e)
+        {
+	        rbtnNotRemember.Checked = true;
         }
 
     }
