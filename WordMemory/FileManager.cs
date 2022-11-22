@@ -1,17 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
-using WordMemory.Data;
 
 namespace WordMemory
 {
+	/*
+	 *  파일과 관련된 전체적인 일을 담당합니다.
+	 *  단어 데이터 저장/로드, 환경설정 파일 저장/로드, 익스포트 데이터 내보내기/불러오기, 파일리스트 관리
+	 *  hex string 데이터를 받습니다.
+	 */
     public static class FileManager
     {
+        // 프로그램에 등록된 단어 데이터리스트를 파일(단어)이름으로 저장합니다.
         public static List<string> DataFileNameList = null;
 
         public static readonly string FILE_EXTENSTION = "wmd";
@@ -21,22 +22,37 @@ namespace WordMemory
         public static readonly string WORDDATA_DIRECTORY_PATH = "Data";
         //public static readonly string PROGRAM_PATH = "";
 
+        /*
+		 *  클래스 데이터를 초기화합니다.
+		 */
         public static void Initialize()
         {
 	        DataFileNameList = new List<string>(2048);
 	        loadFileListFromDataDir();
         }
+
+        /*
+		 *  클래스 데이터를 반환합니다.
+		 */
         public static void Release()
         {
 	        DataFileNameList.Clear();
 	        DataFileNameList = null;
         }
 
+        /*
+		 *  프로그램 환경설정의 hex string 데이터를 파일로 저장합니다.
+         *  경로는 고정입니다.
+		 */
         public static void SaveProgramSettingToFile(string dataToSave)
         {
 	        Debug.Assert((!string.IsNullOrWhiteSpace(dataToSave) || dataToSave != ""), "저장할 데이터가 존재하지 않습니다.");
+	        if (string.IsNullOrWhiteSpace(dataToSave) || dataToSave == "")
+	        {
+		        return;
+	        }
 
-	        string filePath = $"{SETTING_FILE_NAME}.{SETTING_FILE_EXTENSTION}";
+            string filePath = $"{SETTING_FILE_NAME}.{SETTING_FILE_EXTENSTION}";
 	        // 기존 모든 내용을 무시하고 덮어쓰기.
 	        StreamWriter writer = new StreamWriter(filePath, false);
 
@@ -46,27 +62,36 @@ namespace WordMemory
 	        writer = null;
         }
 
+        /*
+		 *  프로그램 환경설정의 데이터 파일을 읽어서 반환합니다.
+         *  hex string을 반환합니다.
+         *  경로는 고정입니다.
+		 */
         public static void LoadProgramSettingFromFile(out string settingString)
         {
             string filePath = $"{SETTING_FILE_NAME}.{SETTING_FILE_EXTENSTION}";
-            //FileStream file = new FileStream(filePath, FileMode.Open);
 
             StreamReader reader = new StreamReader(filePath);
             // 데이터를 처음부터 끝까지 읽어옴.
             settingString = reader.ReadToEnd();
 
-            // 데이터가 덮어 써지는지 확인하고 안덮어지면 수정.
             reader.Close();
-            //file.Close();
- 
-            //file = null;
+
             reader = null;
         }
 
+        /*
+		 *  단어 hex string 데이터를 파일로 저장합니다.
+         *  데이터 저장 경로에 데이터 이름으로 저장됩니다.
+		 */
         public static void SaveWordDataToFile(string wordName, string dataToSave)
         {
             Debug.Assert((!string.IsNullOrWhiteSpace(wordName) || wordName != ""), "wordName은 단어 이름이어야 합니다.");
             Debug.Assert((!string.IsNullOrWhiteSpace(dataToSave) || dataToSave != ""), "저장할 데이터가 없습니다.");
+            if (string.IsNullOrWhiteSpace(wordName) || wordName == "")
+            {
+	            return;
+            }
 
             string filePath = $"{WORDDATA_DIRECTORY_PATH}//{wordName}.{FILE_EXTENSTION}";
             // 기존 모든 내용을 무시하고 덮어쓰기.
@@ -78,39 +103,59 @@ namespace WordMemory
             writer = null;
         }
 
-        // 단어 이름으로 로드
+
+        /*
+		 *  단어 이름으로 단어 데이터 파일을 읽어서 hex string을 반환합니다.
+		 */
         public static void LoadWordDataFromFile(string wordNameToLoad, out string wordDataString)
         {
             Debug.Assert((!string.IsNullOrWhiteSpace(wordNameToLoad) || wordNameToLoad != ""), "WordNameToLoad 단어 이름이어야 합니다.");
+            if (string.IsNullOrWhiteSpace(wordNameToLoad) || wordNameToLoad == "")
+            {
+	            wordDataString = string.Empty;
+	            return;
+            }
 
             string filePath = $"{WORDDATA_DIRECTORY_PATH}//{wordNameToLoad}.{FILE_EXTENSTION}";
-            //FileStream file = new FileStream(filePath, FileMode.Open);
+
             StreamReader reader = new StreamReader(filePath);
             wordDataString = reader.ReadToEnd();
 
-            // 데이터가 덮어 써지는지 확인하고 안덮어지면 수정.
+   
             reader.Close();
-            //file.Close();
 
-            //file = null;
             reader = null;
         }
 
+        /*
+		 *  단어 이름을 통해 데이터 디렉토리에 존재하는 데이터 파일을 삭제합니다.
+		 */
         public static void RemoveDataFile(string wordNameToRemove)
         {
 	        Debug.Assert((!string.IsNullOrWhiteSpace(wordNameToRemove) || wordNameToRemove != ""), "wordNameToRemove 단어 이름이어야 합니다.");
+	        if (string.IsNullOrWhiteSpace(wordNameToRemove) || wordNameToRemove == "")
+	        {
+		        return;
+	        }
 
-	        string filePath = $"{WORDDATA_DIRECTORY_PATH}//{wordNameToRemove}.{FILE_EXTENSTION}";
+            string filePath = $"{WORDDATA_DIRECTORY_PATH}//{wordNameToRemove}.{FILE_EXTENSTION}";
             File.Delete(filePath);
         }
 
+        /*
+		 *  내보내기 hex string 데이터를 지정한 위치에 파일로 저장합니다.
+		 */
         public static bool SaveExportData(string dataToSave)
         {
 	        Debug.Assert((!string.IsNullOrWhiteSpace(dataToSave) || dataToSave != ""), "저장할 데이터가 없습니다.");
+	        if (string.IsNullOrWhiteSpace(dataToSave) || dataToSave == "")
+	        {
+		        return false;
+	        }
 
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             // 확장자는 프로그램에서 고정시킴.
-            saveFileDialog.DefaultExt = EXPORT_WORDATA_FILE_EXTENSTION;
+            saveFileDialog.DefaultExt = $".{EXPORT_WORDATA_FILE_EXTENSTION}";
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
 	            if (string.IsNullOrWhiteSpace(saveFileDialog.FileName) || saveFileDialog.FileName == string.Empty)
@@ -131,12 +176,15 @@ namespace WordMemory
             return true;
         }
 
+        /*
+		 *  지정한 경로에서 선택한 익스포트 데이터를 읽어서 반환합니다.
+		 */
         public static bool LoadImportDataOrEmpty(out string dataHexString)
         {
 	        OpenFileDialog openFileDialog = new OpenFileDialog();
             // 확장자는 프로그램에서 고정시킴.
             openFileDialog.DefaultExt = EXPORT_WORDATA_FILE_EXTENSTION;
-            openFileDialog.Filter = $"*.{EXPORT_WORDATA_FILE_EXTENSTION}";
+            openFileDialog.Filter = $"|*.{EXPORT_WORDATA_FILE_EXTENSTION}";
 
             dataHexString = string.Empty;
 
@@ -146,13 +194,10 @@ namespace WordMemory
 		        {
 			        return false;
 		        }
-
-		        //Stream stream = openFileDialog.OpenFile();
 		        StreamReader reader = new StreamReader(openFileDialog.FileName);
 
 		        dataHexString = reader.ReadToEnd();
 
-		       // stream.Close();
 		        reader.Close();
 	        }
 	        else
@@ -163,6 +208,9 @@ namespace WordMemory
             return true;
         }
 
+        /*
+		 *  데이터 디렉토리에서 저장된 데이터 파일들을 전부 읽어서 리스트로 저장합니다.
+		 */
         private static void loadFileListFromDataDir()
         {
             if(!Directory.Exists(WORDDATA_DIRECTORY_PATH))
