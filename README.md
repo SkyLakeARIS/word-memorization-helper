@@ -4,7 +4,7 @@
     <table>
 	    <tr>
     	    <td style="padding:10px">
-        	    <img src="" width="900"/>
+        	    <img src="https://github.com/SkyLakeARIS/word-memorization-helper/blob/main/images/main.PNG" width="900"/>
       	  </td>
         </tr>
     </table>
