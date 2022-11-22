@@ -33,6 +33,8 @@
             this.rbtnUseMerged = new System.Windows.Forms.RadioButton();
             this.MessageBox = new System.Windows.Forms.TextBox();
             this.btnSelection = new System.Windows.Forms.Button();
+            this.Word = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // rbtnUseOriginalData
@@ -90,11 +92,31 @@
             this.btnSelection.UseVisualStyleBackColor = true;
             this.btnSelection.Click += new System.EventHandler(this.btnSelection_Click);
             // 
+            // Word
+            // 
+            this.Word.BackColor = System.Drawing.SystemColors.Menu;
+            this.Word.Location = new System.Drawing.Point(60, 35);
+            this.Word.Name = "Word";
+            this.Word.Size = new System.Drawing.Size(207, 21);
+            this.Word.TabIndex = 5;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label1.Location = new System.Drawing.Point(57, 16);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(98, 16);
+            this.label1.TabIndex = 6;
+            this.label1.Text = "충돌한 단어";
+            // 
             // CheckImportDataSetting
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(348, 430);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.Word);
             this.Controls.Add(this.btnSelection);
             this.Controls.Add(this.MessageBox);
             this.Controls.Add(this.rbtnUseMerged);
@@ -115,5 +137,7 @@
         private System.Windows.Forms.RadioButton rbtnUseMerged;
         private System.Windows.Forms.TextBox MessageBox;
         private System.Windows.Forms.Button btnSelection;
+        private System.Windows.Forms.TextBox Word;
+        private System.Windows.Forms.Label label1;
     }
 }

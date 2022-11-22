@@ -45,6 +45,7 @@
             this.RefreshModePanel = new System.Windows.Forms.Panel();
             this.InputTimerCount = new System.Windows.Forms.NumericUpDown();
             this.MessageBox = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.ViewModePanel.SuspendLayout();
             this.RefreshModePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.InputTimerCount)).BeginInit();
@@ -196,27 +197,23 @@
             // 
             // InputTimerCount
             // 
-            this.InputTimerCount.Increment = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
             this.InputTimerCount.Location = new System.Drawing.Point(42, 318);
             this.InputTimerCount.Maximum = new decimal(new int[] {
-            600,
+            60,
             0,
             0,
             0});
             this.InputTimerCount.Minimum = new decimal(new int[] {
-            60,
+            1,
             0,
             0,
             0});
             this.InputTimerCount.Name = "InputTimerCount";
             this.InputTimerCount.Size = new System.Drawing.Size(120, 21);
             this.InputTimerCount.TabIndex = 15;
+            this.InputTimerCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.InputTimerCount.Value = new decimal(new int[] {
-            60,
+            10,
             0,
             0,
             0});
@@ -234,11 +231,22 @@
             this.MessageBox.TabIndex = 16;
             this.MessageBox.TabStop = false;
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("굴림", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label4.Location = new System.Drawing.Point(159, 318);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(32, 21);
+            this.label4.TabIndex = 17;
+            this.label4.Text = "분";
+            // 
             // SettingForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(462, 485);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.MessageBox);
             this.Controls.Add(this.InputTimerCount);
             this.Controls.Add(this.RefreshModePanel);
@@ -282,5 +290,6 @@
         private System.Windows.Forms.Panel RefreshModePanel;
         private System.Windows.Forms.NumericUpDown InputTimerCount;
         private System.Windows.Forms.TextBox MessageBox;
+        private System.Windows.Forms.Label label4;
     }
 }

@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
             "",
             ""}, -1);
             this.MessageBox = new System.Windows.Forms.TextBox();
@@ -44,6 +44,11 @@
             this.InputMean = new System.Windows.Forms.TextBox();
             this.btnAddMean = new System.Windows.Forms.Button();
             this.btnModifyWord = new System.Windows.Forms.Button();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.rbtnNotRemember = new System.Windows.Forms.RadioButton();
+            this.rbtnRemember = new System.Windows.Forms.RadioButton();
+            this.label7 = new System.Windows.Forms.Label();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // MessageBox
@@ -51,11 +56,11 @@
             this.MessageBox.BackColor = System.Drawing.SystemColors.Menu;
             this.MessageBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.MessageBox.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.MessageBox.Location = new System.Drawing.Point(117, 375);
+            this.MessageBox.Location = new System.Drawing.Point(117, 404);
             this.MessageBox.Multiline = true;
             this.MessageBox.Name = "MessageBox";
             this.MessageBox.ReadOnly = true;
-            this.MessageBox.Size = new System.Drawing.Size(233, 98);
+            this.MessageBox.Size = new System.Drawing.Size(233, 69);
             this.MessageBox.TabIndex = 29;
             this.MessageBox.TabStop = false;
             // 
@@ -114,7 +119,7 @@
             this.MeanListView.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.MeanListView.HideSelection = false;
             this.MeanListView.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem2});
+            listViewItem1});
             this.MeanListView.Location = new System.Drawing.Point(117, 129);
             this.MeanListView.MultiSelect = false;
             this.MeanListView.Name = "MeanListView";
@@ -185,11 +190,55 @@
             this.btnModifyWord.UseVisualStyleBackColor = true;
             this.btnModifyWord.Click += new System.EventHandler(this.btnModifyWord_Click);
             // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.rbtnNotRemember);
+            this.panel1.Controls.Add(this.rbtnRemember);
+            this.panel1.Controls.Add(this.label7);
+            this.panel1.Location = new System.Drawing.Point(117, 375);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(233, 23);
+            this.panel1.TabIndex = 34;
+            // 
+            // rbtnNotRemember
+            // 
+            this.rbtnNotRemember.AutoSize = true;
+            this.rbtnNotRemember.Location = new System.Drawing.Point(132, 3);
+            this.rbtnNotRemember.Name = "rbtnNotRemember";
+            this.rbtnNotRemember.Size = new System.Drawing.Size(59, 16);
+            this.rbtnNotRemember.TabIndex = 24;
+            this.rbtnNotRemember.TabStop = true;
+            this.rbtnNotRemember.Text = "미암기";
+            this.rbtnNotRemember.UseVisualStyleBackColor = true;
+            this.rbtnNotRemember.CheckedChanged += new System.EventHandler(this.rbtnNotRememberFirst_CheckedChanged);
+            // 
+            // rbtnRemember
+            // 
+            this.rbtnRemember.AutoSize = true;
+            this.rbtnRemember.Location = new System.Drawing.Point(23, 4);
+            this.rbtnRemember.Name = "rbtnRemember";
+            this.rbtnRemember.Size = new System.Drawing.Size(47, 16);
+            this.rbtnRemember.TabIndex = 23;
+            this.rbtnRemember.TabStop = true;
+            this.rbtnRemember.Text = "암기";
+            this.rbtnRemember.UseVisualStyleBackColor = true;
+            this.rbtnRemember.CheckedChanged += new System.EventHandler(this.rbtnRememberFirst_CheckedChanged);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("굴림", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label7.Location = new System.Drawing.Point(3, 0);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(0, 24);
+            this.label7.TabIndex = 22;
+            // 
             // FindWordForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(462, 527);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.btnModifyWord);
             this.Controls.Add(this.WordClassCombo);
             this.Controls.Add(this.InputMean);
@@ -206,6 +255,8 @@
             this.Name = "FindWordForm";
             this.Text = "단어 찾기";
             this.Load += new System.EventHandler(this.FindWordForm_Load);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -226,5 +277,9 @@
         private System.Windows.Forms.TextBox InputMean;
         private System.Windows.Forms.Button btnAddMean;
         private System.Windows.Forms.Button btnModifyWord;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.RadioButton rbtnNotRemember;
+        private System.Windows.Forms.RadioButton rbtnRemember;
+        private System.Windows.Forms.Label label7;
     }
 }
