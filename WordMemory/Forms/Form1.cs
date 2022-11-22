@@ -1,17 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 using System.Windows.Forms;
+using WordMemory.Data;
+using Timer = System.Windows.Forms.Timer;
+
+// form timer대신에 사용.
 
 namespace WordMemory
 {
     public partial class MainForm : Form
     {
+	    private WordData mFirstData = null;
+	    private WordData mSecondData = null;
+
+        private Timer mWordRefreshTimer = null;
         public MainForm()
         {
             InitializeComponent();
@@ -20,63 +22,278 @@ namespace WordMemory
         private void MainForm_Load(object sender, EventArgs e)
         {
             // 초기 설정
+            mWordRefreshTimer = new Timer();
+            mWordRefreshTimer.Interval = Setting.GetRefreshTimeMilliseconds();
+            mWordRefreshTimer.Tick += new EventHandler(btnRefreshWord_Click);
+            mWordRefreshTimer.Enabled = true;
+
+            ColumnHeader header1 = new ColumnHeader();
+            header1.Text = "";
+            header1.Name = "Mean";
+            header1.Width = WordManager.MEAN_STRING_LENGTH_LIMIT;
+            MeanListViewFirst.View = View.Details;
+            MeanListViewFirst.Columns.Add(header1);
+            MeanListViewFirst.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+
+            ColumnHeader header2 = new ColumnHeader();
+            header2.Text = "";
+            header2.Name = "Mean";
+            header2.Width = WordManager.MEAN_STRING_LENGTH_LIMIT;
+
+            MeanListViewSecond.View = View.Details;
+            MeanListViewSecond.Columns.Add(header2);
+            MeanListViewSecond.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+
+            btnRefreshWord_Click(this, null);
         }
 
         private void btnAddWord_Click(object sender, EventArgs e)
         {
+	        mWordRefreshTimer.Stop();
+
             AddWordForm addWordForm = new AddWordForm();
-            if(DialogResult.Cancel == addWordForm.ShowDialog() || DialogResult.OK == addWordForm.ShowDialog())
+
+            DialogResult result = addWordForm.ShowDialog();
+            if (result == DialogResult.OK)
             {
-                addWordForm.Close();
+	            btnRefreshWord_Click(this, null);
             }
+
+            addWordForm.Close();
+            mWordRefreshTimer.Start();
+
         }
 
         private void btnFindWord_Click(object sender, EventArgs e)
         {
+	        mWordRefreshTimer.Stop();
+
             FindWordForm findWordForm = new FindWordForm();
-            if (DialogResult.Cancel == findWordForm.ShowDialog() || DialogResult.OK == findWordForm.ShowDialog())
+
+            DialogResult result = findWordForm.ShowDialog();
+            if (result == DialogResult.OK)
             {
-                findWordForm.Close();
+	            btnRefreshWord_Click(this, null);
             }
+            findWordForm.Close();
+            mWordRefreshTimer.Start();
+
         }
 
         private void btnRemoveWord_Click(object sender, EventArgs e)
         {
+	        mWordRefreshTimer.Stop();
+
             RemoveWordForm removeWordForm = new RemoveWordForm();
-            if (DialogResult.Cancel == removeWordForm.ShowDialog() || DialogResult.OK == removeWordForm.ShowDialog())
+
+            DialogResult result = removeWordForm.ShowDialog();
+            if (result == DialogResult.OK)
             {
-                removeWordForm.Close();
+	            btnRefreshWord_Click(this, null);
             }
+
+            removeWordForm.Close();
+
+            mWordRefreshTimer.Start();
+
         }
 
         private void btnTestWord_Click(object sender, EventArgs e)
         {
+	        mWordRefreshTimer.Stop();
+
             TestForm testForm = new TestForm();
-            if (DialogResult.Cancel == testForm.ShowDialog() || DialogResult.OK == testForm.ShowDialog())
-            {
-                testForm.Close();
-            }
+
+            testForm.ShowDialog();
+            testForm.Close();
+
+            mWordRefreshTimer.Start();
         }
 
         private void btnSetting_Click(object sender, EventArgs e)
         {
             SettingForm settingForm = new SettingForm();
-            if (DialogResult.Cancel == settingForm.ShowDialog() || DialogResult.OK == settingForm.ShowDialog())
+            mWordRefreshTimer.Stop();
+            DialogResult result = settingForm.ShowDialog();
+            if (DialogResult.Cancel == result)
             {
                 settingForm.Close();
+                // 타이머 값이 변경되었으면 타이머 업데이트.
+                if (Setting.GetRefreshTimeMilliseconds() != (Int32)mWordRefreshTimer.Interval)
+                {
+                    // 현재 타이머에 남은 시간이 새로 바뀐 타이머 간격보다 짧으면 다음 간격에 새로운 값이 반영되고,
+                    // 그렇지 않으면(남은 시간이 더 길면) 새로운 타이머 시간으로 변경하도록 하고 싶은데
+                    // 남은 시간을 관리 할 수 있도록 따로 기능을 만들어야 할 듯.
+                    mWordRefreshTimer.Interval = Setting.GetRefreshTimeMilliseconds();
+                }
             }
+            mWordRefreshTimer.Start();
         }
 
         private void btnRefreshWord_Click(object sender, EventArgs e)
         {
 
+            switch (Setting.ViewMode)
+	        {
+		        case EViewMode.SHOW_ONLY_NOT_REMEMBER:
+		        {
+			        mFirstData = WordManager.GetWodDataOrNullBy(ERememberType.NOT_REMEMBER);
+			        mSecondData = WordManager.GetWodDataOrNullBy(ERememberType.NOT_REMEMBER);
+			        break;
+		        }
+		        case EViewMode.SHOW_ONLY_REMEMBER:
+		        {
+			        mFirstData = WordManager.GetWodDataOrNullBy(ERememberType.REMEMBER);
+			        mSecondData = WordManager.GetWodDataOrNullBy(ERememberType.REMEMBER);
+			        break;
+		        }
+
+		        case EViewMode.SHOW_MIXED:
+		        {
+			        mFirstData = WordManager.GetWodDataOrNullBy(ERememberType.NOT_REMEMBER);
+			        mSecondData = WordManager.GetWodDataOrNullBy(ERememberType.REMEMBER);
+			        // 암기된 단어가 없으면 미암기 데이터로 표기.
+			        if (mSecondData == null)
+			        {
+				        mSecondData = WordManager.GetWodDataOrNullBy(ERememberType.NOT_REMEMBER);
+			        }
+			        break;
+		        }
+		        default:
+			        Debug.Assert(false, $"잘못된 ViewMode 데이터입니다. {Setting.ViewMode}");
+			        break;
+	        }
+
+            // 추가된 데이터가 없을 경우. (혹은 표시할 데이터가 없을 경우.)
+            if (mFirstData == null)
+            {
+	            WordFirst.Text = string.Empty;
+	            MeanListViewFirst.BeginUpdate();
+	            MeanListViewFirst.Items.Clear();
+	            MeanListViewFirst.EndUpdate();
+	            MemoFirst.Text = string.Empty;
+	            rbtnNotRememberFirst.Checked = false;
+	            rbtnRememberFirst.Checked = false;
+	            return;
+            }
+
+            // 같은 데이터이면 하나 제거.
+            if (mFirstData.WordName.Equals(mSecondData.WordName))
+            {
+	            mSecondData = null;
+            }
+
+            // 첫번째 단어 UI로 데이터 갱신
+            WordFirst.Text = mFirstData.WordName;
+            MeanListViewFirst.BeginUpdate();
+            MeanListViewFirst.Items.Clear();
+            foreach (string mean in mFirstData.MeanList)
+            {
+	            MeanListViewFirst.Items.Add(mean);
+            }
+            MeanListViewFirst.EndUpdate();
+            MemoFirst.Text = mFirstData.Memo;
+
+            if (mFirstData.RememberType == ERememberType.REMEMBER)
+            {
+	            rbtnRememberFirst.Checked = true;
+            }
+            else
+            {
+	            rbtnNotRememberFirst.Checked = true;
+            }
+
+            // 표시할 데이터가 없을 경우.
+            if (mSecondData == null)
+            {
+	            WordSecond.Text = string.Empty;
+	            MeanListViewSecond.BeginUpdate();
+	            MeanListViewSecond.Items.Clear();
+	            MeanListViewSecond.EndUpdate();
+	            MemoSecond.Text = string.Empty;
+	            rbtnRememberSecond.Checked = false;
+	            rbtnNotRememberSecond.Checked = false;
+                return;
+            }
+
+            // 두번째 단어 UI로 데이터 갱신
+            WordSecond.Text = mSecondData.WordName;
+            MeanListViewSecond.BeginUpdate();
+            MeanListViewSecond.Items.Clear();
+            foreach (string mean in mSecondData.MeanList)
+            {
+	            MeanListViewSecond.Items.Add(mean);
+            }
+            MeanListViewSecond.EndUpdate();
+            MemoSecond.Text = mSecondData.Memo;
+
+            if (mSecondData.RememberType == ERememberType.REMEMBER)
+            {
+	            rbtnRememberSecond.Checked = true;
+            }
+            else
+            {
+	            rbtnNotRememberSecond.Checked = true;
+            }
         }
 
         private void btnSaveAndExit_Click(object sender, EventArgs e)
         {
+	        mFirstData = null;
+	        mSecondData = null;
             DialogResult = DialogResult.OK;
             Close();
         }
 
+        private void rbtnRememberFirst_CheckedChanged(object sender, EventArgs e)
+        {
+	        if (mFirstData == null)
+	        {
+		        return;
+	        }
+
+            if (mFirstData.RememberType != ERememberType.REMEMBER)
+	        {
+                mFirstData.UpdateRememberType(ERememberType.REMEMBER);
+	        }
+        }
+
+        private void rbtnNotRememberFirst_CheckedChanged(object sender, EventArgs e)
+        {
+	        if (mFirstData == null)
+	        {
+		        return;
+	        }
+
+            if (mFirstData.RememberType != ERememberType.NOT_REMEMBER)
+	        {
+		        mFirstData.UpdateRememberType(ERememberType.NOT_REMEMBER);
+	        }
+        }
+
+        private void rbtnRememberSecond_CheckedChanged(object sender, EventArgs e)
+        {
+	        if (mSecondData == null)
+	        {
+		        return;
+	        }
+            if (mSecondData.RememberType != ERememberType.REMEMBER)
+	        {
+		        mSecondData.UpdateRememberType(ERememberType.REMEMBER);
+	        }
+        }
+
+        private void rbtnNotRememberSecond_CheckedChanged(object sender, EventArgs e)
+        {
+	        if (mSecondData == null)
+	        {
+		        return;
+	        }
+
+	        if (mSecondData.RememberType != ERememberType.NOT_REMEMBER)
+	        {
+		        mSecondData.UpdateRememberType(ERememberType.NOT_REMEMBER);
+	        }
+        }
     }
 }
