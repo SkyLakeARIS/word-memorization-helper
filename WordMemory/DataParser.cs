@@ -139,8 +139,8 @@ namespace WordMemory
 	        }
 
             string[] splitedData = settingData.Split(DATA_SEPARATOR);
-            Debug.Assert(splitedData.Length == 3, $"데이터에 이상이 있습니다. 데이터 구조 개수는 3개여야 하는데 {splitedData.Length}개 입니다.");
-            if (splitedData.Length != 3)
+            Debug.Assert(splitedData.Length == 4, $"데이터에 이상이 있습니다. 데이터 구조 개수는 3개여야 하는데 {splitedData.Length}개 입니다.");
+            if (splitedData.Length != 4)
             {
 	            return;
             }
@@ -153,6 +153,10 @@ namespace WordMemory
 
             // 3. 타이머 설정 값 추출
             Setting.RefreshTimeMilliseconds = MyConverter.HexToInt32(splitedData[2]);
+
+            // 4. 윈도우 실행시 자동시작 여부 값 추출
+            Setting.AutoStart = (EAutoStart)MyConverter.HexToInt32(splitedData[3]);
+
         }
     }
 }

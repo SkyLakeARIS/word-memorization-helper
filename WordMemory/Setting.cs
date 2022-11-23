@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.IO;
 using System.Text;
+using System.Windows.Forms;
 
 namespace WordMemory
 {
@@ -15,6 +17,11 @@ namespace WordMemory
         MANUAL,
         TIMER,
     };
+    public enum EAutoStart
+    {
+        UNSET_AUTO_START,
+	    SET_AUTO_START
+    };
 
     /*
 	 * 프로그램 환경설정 클래스
@@ -24,6 +31,7 @@ namespace WordMemory
         public static EViewMode ViewMode {get; set; }
         public static ERefreshMode RefreshMode { get; set; }
 
+        public static EAutoStart AutoStart { get; set; }
         public static Int32 RefreshTimeMilliseconds
         {
 	        private get
@@ -57,8 +65,10 @@ namespace WordMemory
                 ViewMode = EViewMode.SHOW_ONLY_NOT_REMEMBER;
                 RefreshMode = ERefreshMode.TIMER;
                 RefreshTimeMilliseconds = REFRESH_TIME_MINUTES_DEFAULT;
+                AutoStart = EAutoStart.SET_AUTO_START;
                 streamWriter.Write(makeSettingDataToHexString());
                 streamWriter.Close();
+
                 return;
             }
 
@@ -110,8 +120,12 @@ namespace WordMemory
             // 저장시에는 분 단위로 저장한다.
             Int32 refreshTimeMinutes = GetRefreshTimeMinutes();
             stringBuilder.Append(MyConverter.Int32ToHexX4(refreshTimeMinutes));
+            stringBuilder.Append(DataParser.DATA_SEPARATOR);
 
-	        return stringBuilder.ToString();
+            // 4. 윈도우 시작시 자동실행 여부를 저장합니다.
+            stringBuilder.Append(MyConverter.Int32ToHexX4((Int32)AutoStart));
+
+            return stringBuilder.ToString();
         }
     }
 }

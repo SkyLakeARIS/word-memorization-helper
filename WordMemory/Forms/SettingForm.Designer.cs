@@ -46,9 +46,13 @@
             this.InputTimerCount = new System.Windows.Forms.NumericUpDown();
             this.MessageBox = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.AutoStartBox = new System.Windows.Forms.CheckBox();
             this.ViewModePanel.SuspendLayout();
             this.RefreshModePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.InputTimerCount)).BeginInit();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -95,7 +99,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("굴림", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.label3.Location = new System.Drawing.Point(41, 285);
+            this.label3.Location = new System.Drawing.Point(41, 265);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(128, 21);
             this.label3.TabIndex = 4;
@@ -197,7 +201,7 @@
             // 
             // InputTimerCount
             // 
-            this.InputTimerCount.Location = new System.Drawing.Point(42, 318);
+            this.InputTimerCount.Location = new System.Drawing.Point(42, 298);
             this.InputTimerCount.Maximum = new decimal(new int[] {
             60,
             0,
@@ -235,17 +239,48 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("굴림", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.label4.Location = new System.Drawing.Point(159, 318);
+            this.label4.Location = new System.Drawing.Point(159, 298);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(32, 21);
             this.label4.TabIndex = 17;
             this.label4.Text = "분";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("굴림", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label5.Location = new System.Drawing.Point(297, 173);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(98, 21);
+            this.label5.TabIndex = 18;
+            this.label5.Text = "자동실행";
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.AutoStartBox);
+            this.panel1.Location = new System.Drawing.Point(297, 197);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(136, 38);
+            this.panel1.TabIndex = 15;
+            // 
+            // AutoStartBox
+            // 
+            this.AutoStartBox.AutoSize = true;
+            this.AutoStartBox.Location = new System.Drawing.Point(5, 12);
+            this.AutoStartBox.Name = "AutoStartBox";
+            this.AutoStartBox.Size = new System.Drawing.Size(128, 16);
+            this.AutoStartBox.TabIndex = 19;
+            this.AutoStartBox.Text = "윈도우 시작시 실행";
+            this.AutoStartBox.UseVisualStyleBackColor = true;
+            this.AutoStartBox.CheckedChanged += new System.EventHandler(this.AutoStartBox_CheckedChanged);
             // 
             // SettingForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(462, 485);
+            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.MessageBox);
             this.Controls.Add(this.InputTimerCount);
@@ -266,6 +301,8 @@
             this.RefreshModePanel.ResumeLayout(false);
             this.RefreshModePanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.InputTimerCount)).EndInit();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -291,5 +328,8 @@
         private System.Windows.Forms.NumericUpDown InputTimerCount;
         private System.Windows.Forms.TextBox MessageBox;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.CheckBox AutoStartBox;
     }
 }

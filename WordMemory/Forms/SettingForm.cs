@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
+using Microsoft.Win32;
 
 namespace WordMemory
 {
@@ -9,14 +10,16 @@ namespace WordMemory
     {
         public SettingForm()
         {
+            
             InitializeComponent();
         }
 
         private void SettingForm_Load(object sender, EventArgs e)
         {
+
             // Setting 클래스에서 정보 초기화
             // 1. 뷰모드 초기화
-            switch(Setting.ViewMode)
+            switch (Setting.ViewMode)
 			{
             case EViewMode.SHOW_ONLY_NOT_REMEMBER:
 	            rbtnViewNotRemember.Checked = true;
@@ -50,6 +53,17 @@ namespace WordMemory
 
             // 3. 타이머 값 초기화
             InputTimerCount.Value = Setting.GetRefreshTimeMinutes();
+
+
+            // 4. 윈도우 시작시 자동실행 여부 초기화
+            if (Setting.AutoStart == EAutoStart.SET_AUTO_START)
+            {
+	            AutoStartBox.Checked = true;
+            }
+            else
+            {
+	            AutoStartBox.Checked = false;
+            }
 
             MessageBox.Text = "설정이 로드되었습니다.";
             MessageBox.ForeColor = Color.Green;
@@ -107,5 +121,39 @@ namespace WordMemory
 	        WordManager.ImportWordData();
         }
 
+        private void AutoStartBox_CheckedChanged(object sender, EventArgs e)
+        {
+            
+	        if (AutoStartBox.Checked)
+	        {
+		        Setting.AutoStart = EAutoStart.SET_AUTO_START;
+		        //Write(Microsoft.Win32.Registry.LocalMachine, @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run\", "WordMemory", "\"" + Application.ExecutablePath.ToString() + "\"");
+
+                RegistryKey key = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+                key.SetValue("WordMemory", Application.ExecutablePath);
+            }
+            else
+	        {
+		        Setting.AutoStart = EAutoStart.UNSET_AUTO_START;
+		        RegistryKey key = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+		        key.DeleteValue("WordMemory", false);
+	        }
+        }
+
+        public bool Write(RegistryKey baseKey, string keyPath, string KeyName, object Value)
+        {
+
+		        // Setting 
+		        RegistryKey rk = baseKey;
+		        // I have to use CreateSubKey 
+		        // (create or open it if already exits), 
+		        // 'cause OpenSubKey open a subKey as read-only 
+		        RegistryKey sk1 = rk.CreateSubKey(keyPath);
+		        // Save the value 
+		        sk1.SetValue(KeyName.ToUpper(), Value);
+
+		        return true;
+
+        }
     }
 }
