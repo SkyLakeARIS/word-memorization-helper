@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Diagnostics;
 using System.Windows.Forms;
 using WordMemory.BindingData;
+using System.Security.Principal;
 
 namespace WordMemory
 {
@@ -15,27 +14,55 @@ namespace WordMemory
         [STAThread]
         static void Main()
         {
+
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            // initialize data
-            WordClassData.Initialize();
-            MyConverter.Initialize();
-            FileManager.Initialize();
-            WordTable.Initialize();
-            Setting.Initialize();
-            WordManager.Initialize();
+            WindowsIdentity identity = WindowsIdentity.GetCurrent();
 
-            MainForm mainForm = new MainForm();
-            Application.Run(mainForm);
+            // 관리자 모드가 아니면 관리자 모드로 재실행합니다. (사용자의 확인 후.)
+            if (identity != null)
+            {
+	            WindowsPrincipal principal = new WindowsPrincipal(identity);
 
-            // save files and release
-            // stop refresh timer
-            WordClassData.Release();
-            MyConverter.Release();
-            FileManager.Release();
-            WordManager.Release();
-            WordTable.Release();
+	            bool isAdministrator = principal.IsInRole(WindowsBuiltInRole.Administrator);
+
+	            if (!isAdministrator)
+	            {
+		            ProcessStartInfo info = new ProcessStartInfo();
+		            info.UseShellExecute = true;
+		            info.FileName = System.Reflection.Assembly.GetExecutingAssembly().Location;
+		            info.WorkingDirectory = Environment.CurrentDirectory;
+		            info.Verb = "runas";
+
+		            Process.Start(info);
+	            }
+	            else
+	            {
+		            // initialize data
+		            WordClassData.Initialize();
+		            FileManager.Initialize();
+		            WordTable.Initialize();
+		            Setting.Initialize();
+		            WordManager.Initialize();
+
+		            MainForm mainForm = new MainForm();
+		            Application.Run(mainForm);
+
+		            // save files and release
+		            // stop refresh timer
+		            WordManager.Release();
+		            WordTable.Release();
+		            WordClassData.Release();
+		            FileManager.Release();
+	            }
+            }
+
+        }
+
+        static void SetAdministratorMode()
+        {
 
         }
     }
