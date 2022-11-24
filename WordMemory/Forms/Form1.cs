@@ -4,7 +4,6 @@ using System.Windows.Forms;
 using WordMemory.Data;
 using Timer = System.Windows.Forms.Timer;
 
-// form timer대신에 사용.
 
 namespace WordMemory
 {
@@ -242,6 +241,7 @@ namespace WordMemory
 	        mFirstData = null;
 	        mSecondData = null;
             DialogResult = DialogResult.OK;
+            mWordRefreshTimer.Dispose();
             Close();
         }
 
