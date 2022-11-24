@@ -30,7 +30,6 @@ namespace WordMemory
     {
         public static EViewMode ViewMode {get; set; }
         public static ERefreshMode RefreshMode { get; set; }
-
         public static EAutoStart AutoStart { get; set; }
         public static Int32 RefreshTimeMilliseconds
         {

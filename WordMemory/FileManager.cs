@@ -166,6 +166,7 @@ namespace WordMemory
 
                 writer.Write(dataToSave);
 
+                saveFileDialog.Dispose();
                 writer.Close();
             }
             else
@@ -198,6 +199,7 @@ namespace WordMemory
 
 		        dataHexString = reader.ReadToEnd();
 
+		        openFileDialog.Dispose();
 		        reader.Close();
 	        }
 	        else
@@ -221,8 +223,8 @@ namespace WordMemory
 	        string[] files = Directory.GetFiles(WORDDATA_DIRECTORY_PATH);
 	        if (files.Length <= 0)
 	        {
-                // 아직 생성한 데이터가 없음.
-		        return;
+		        // 아직 생성한 데이터가 없음.
+                return;
 	        }
 
 	        foreach (string file in files)
