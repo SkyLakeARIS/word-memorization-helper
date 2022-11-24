@@ -83,6 +83,8 @@ namespace WordMemory
 		    currentRememberListIndex = rand.Next(rememberList.Count);
 		    currentNotRememberListIndex = rand.Next(notRememberList.Count);
 
+
+		    MessageBox.Show($"감지된 단어 {FileManager.DataFileNameList.Count}중 {(notRememberList.Count + rememberList.Count)}개가 로드 되었습니다.", "워드 매니저", MessageBoxButtons.OK, MessageBoxIcon.Information);
 	    }
 
         /*
