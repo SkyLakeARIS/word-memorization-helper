@@ -65,8 +65,11 @@ namespace WordMemory
 	            AutoStartBox.Checked = false;
             }
 
-            MessageBox.Text = "설정이 로드되었습니다.";
+            // 메세지 출력
+            MessageBox.Text = $"설정이 로드되었습니다.";
             MessageBox.ForeColor = Color.Green;
+
+            DirectoryBox.Text = $"현재 프로그램 디렉토리{Application.StartupPath}";
         }
 
         private void btnApply_Click(object sender, EventArgs e)
@@ -127,33 +130,17 @@ namespace WordMemory
 	        if (AutoStartBox.Checked)
 	        {
 		        Setting.AutoStart = EAutoStart.SET_AUTO_START;
-		        //Write(Microsoft.Win32.Registry.LocalMachine, @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run\", "WordMemory", "\"" + Application.ExecutablePath.ToString() + "\"");
 
-                RegistryKey key = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+                //  Microsoft.Win32.Registry.LocalMachine 와 차이는 크게 없는 듯 하나 좀 더 알아볼 필요가 있음.
+                RegistryKey key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
                 key.SetValue("WordMemory", Application.ExecutablePath);
             }
             else
 	        {
 		        Setting.AutoStart = EAutoStart.UNSET_AUTO_START;
-		        RegistryKey key = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+		        RegistryKey key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
 		        key.DeleteValue("WordMemory", false);
 	        }
-        }
-
-        public bool Write(RegistryKey baseKey, string keyPath, string KeyName, object Value)
-        {
-
-		        // Setting 
-		        RegistryKey rk = baseKey;
-		        // I have to use CreateSubKey 
-		        // (create or open it if already exits), 
-		        // 'cause OpenSubKey open a subKey as read-only 
-		        RegistryKey sk1 = rk.CreateSubKey(keyPath);
-		        // Save the value 
-		        sk1.SetValue(KeyName.ToUpper(), Value);
-
-		        return true;
-
         }
     }
 }

@@ -49,6 +49,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.AutoStartBox = new System.Windows.Forms.CheckBox();
+            this.DirectoryBox = new System.Windows.Forms.TextBox();
             this.ViewModePanel.SuspendLayout();
             this.RefreshModePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.InputTimerCount)).BeginInit();
@@ -274,11 +275,25 @@
             this.AutoStartBox.UseVisualStyleBackColor = true;
             this.AutoStartBox.CheckedChanged += new System.EventHandler(this.AutoStartBox_CheckedChanged);
             // 
+            // DirectoryBox
+            // 
+            this.DirectoryBox.BackColor = System.Drawing.SystemColors.Menu;
+            this.DirectoryBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.DirectoryBox.Font = new System.Drawing.Font("굴림", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.DirectoryBox.Location = new System.Drawing.Point(12, 12);
+            this.DirectoryBox.Multiline = true;
+            this.DirectoryBox.Name = "DirectoryBox";
+            this.DirectoryBox.ReadOnly = true;
+            this.DirectoryBox.Size = new System.Drawing.Size(310, 24);
+            this.DirectoryBox.TabIndex = 19;
+            this.DirectoryBox.TabStop = false;
+            // 
             // SettingForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(462, 485);
+            this.Controls.Add(this.DirectoryBox);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
@@ -331,5 +346,6 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.CheckBox AutoStartBox;
+        private System.Windows.Forms.TextBox DirectoryBox;
     }
 }
