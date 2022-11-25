@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.WordFirst = new System.Windows.Forms.TextBox();
             this.fontDialog1 = new System.Windows.Forms.FontDialog();
             this.label1 = new System.Windows.Forms.Label();
@@ -56,6 +57,8 @@
             this.rbtnNotRememberSecond = new System.Windows.Forms.RadioButton();
             this.rbtnRememberSecond = new System.Windows.Forms.RadioButton();
             this.label8 = new System.Windows.Forms.Label();
+            this.btnPronounceWordFirst = new System.Windows.Forms.Button();
+            this.btnPronounceWordSecond = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
@@ -346,11 +349,33 @@
             this.label8.Size = new System.Drawing.Size(0, 24);
             this.label8.TabIndex = 22;
             // 
+            // btnPronounceWordFirst
+            // 
+            this.btnPronounceWordFirst.Image = ((System.Drawing.Image)(resources.GetObject("btnPronounceWordFirst.Image")));
+            this.btnPronounceWordFirst.Location = new System.Drawing.Point(84, 40);
+            this.btnPronounceWordFirst.Name = "btnPronounceWordFirst";
+            this.btnPronounceWordFirst.Size = new System.Drawing.Size(37, 23);
+            this.btnPronounceWordFirst.TabIndex = 26;
+            this.btnPronounceWordFirst.UseVisualStyleBackColor = true;
+            this.btnPronounceWordFirst.Click += new System.EventHandler(this.btnPronounceWordFirst_Click);
+            // 
+            // btnPronounceWordSecond
+            // 
+            this.btnPronounceWordSecond.Image = ((System.Drawing.Image)(resources.GetObject("btnPronounceWordSecond.Image")));
+            this.btnPronounceWordSecond.Location = new System.Drawing.Point(81, 381);
+            this.btnPronounceWordSecond.Name = "btnPronounceWordSecond";
+            this.btnPronounceWordSecond.Size = new System.Drawing.Size(40, 24);
+            this.btnPronounceWordSecond.TabIndex = 27;
+            this.btnPronounceWordSecond.UseVisualStyleBackColor = true;
+            this.btnPronounceWordSecond.Click += new System.EventHandler(this.btnPronounceWordSecond_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(521, 703);
+            this.Controls.Add(this.btnPronounceWordSecond);
+            this.Controls.Add(this.btnPronounceWordFirst);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.MeanListViewSecond);
@@ -414,6 +439,8 @@
         private System.Windows.Forms.RadioButton rbtnNotRememberSecond;
         private System.Windows.Forms.RadioButton rbtnRememberSecond;
         private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Button btnPronounceWordFirst;
+        private System.Windows.Forms.Button btnPronounceWordSecond;
     }
 }
 

@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
+using System.Security.Policy;
 using System.Windows.Forms;
 using WordMemory.Data;
 using Timer = System.Windows.Forms.Timer;
+using WMPLib;
 
 
 namespace WordMemory
@@ -13,7 +16,10 @@ namespace WordMemory
 	    private WordData mSecondData = null;
 
         private Timer mWordRefreshTimer = null;
-        public MainForm()
+        private WindowsMediaPlayer mAudioPlayer = null;
+        
+
+	    public MainForm()
         {
             InitializeComponent();
         }
@@ -21,6 +27,9 @@ namespace WordMemory
         private void MainForm_Load(object sender, EventArgs e)
         {
             // 초기 설정
+            mAudioPlayer = new WMPLib.WindowsMediaPlayer();
+            mAudioPlayer.PlayStateChange += new WMPLib._WMPOCXEvents_PlayStateChangeEventHandler(onAudioPlayerStateChange);
+
             mWordRefreshTimer = new Timer();
             mWordRefreshTimer.Interval = Setting.GetRefreshTimeMilliseconds();
             mWordRefreshTimer.Tick += new EventHandler(btnRefreshWord_Click);
@@ -60,7 +69,6 @@ namespace WordMemory
 
             addWordForm.Close();
             mWordRefreshTimer.Start();
-
         }
 
         private void btnFindWord_Click(object sender, EventArgs e)
@@ -240,6 +248,8 @@ namespace WordMemory
         {
 	        mFirstData = null;
 	        mSecondData = null;
+	        mAudioPlayer.close();
+            mAudioPlayer = null;
             DialogResult = DialogResult.OK;
             mWordRefreshTimer.Dispose();
             Close();
@@ -293,6 +303,41 @@ namespace WordMemory
 	        if (mSecondData.RememberType != ERememberType.NOT_REMEMBER)
 	        {
 		        mSecondData.UpdateRememberType(ERememberType.NOT_REMEMBER);
+	        }
+        }
+
+        private void btnPronounceWordFirst_Click(object sender, EventArgs e)
+        {
+	        audioPlayerPlay(WordFirst.Text);
+        }
+
+        private void btnPronounceWordSecond_Click(object sender, EventArgs e)
+        {
+	        audioPlayerPlay(WordSecond.Text);
+        }
+
+        private void audioPlayerPlay(string wordName)
+        {
+
+	        if (!File.Exists($"{FileManager.AUDIO_DIRECTORY_PATH}\\{wordName}.mp3"))
+	        {
+		        if (DialogResult.Yes == MessageBox.Show("음성 파일을 받으시겠습니까?", "음성 파일이 존재하지 않습니다!", MessageBoxButtons.YesNo, MessageBoxIcon.Information))
+		        {
+			        FileManager.DownloadAudioFile(wordName);
+		        }
+	        }
+	        else
+	        {
+		        mAudioPlayer.URL = $"{Application.StartupPath}//{FileManager.AUDIO_DIRECTORY_PATH}//{wordName}.mp3";
+		        mAudioPlayer.controls.play();
+            }
+        }
+
+        private void onAudioPlayerStateChange(int newState)
+        {
+	        if ((WMPLib.WMPPlayState)newState == WMPLib.WMPPlayState.wmppsStopped)
+	        {
+		        mAudioPlayer.close();
 	        }
         }
     }

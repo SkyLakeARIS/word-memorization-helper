@@ -2,6 +2,10 @@
 using System.IO;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Net;
+using WMPLib;
+using System;
+using System.ComponentModel;
 
 namespace WordMemory
 {
@@ -14,12 +18,13 @@ namespace WordMemory
     {
         // 프로그램에 등록된 단어 데이터리스트를 파일(단어)이름으로 저장합니다.
         public static List<string> DataFileNameList = null;
-
+        public static WebClient WebClient = null;
         public static readonly string FILE_EXTENSTION = "wmd";
         public static readonly string EXPORT_WORDATA_FILE_EXTENSTION = "expwmd";
         public static readonly string SETTING_FILE_NAME = "setting";
         public static readonly string SETTING_FILE_EXTENSTION = "wmsetting";
         public static readonly string WORDDATA_DIRECTORY_PATH = "Data";
+        public static readonly string AUDIO_DIRECTORY_PATH = "Audio";
         //public static readonly string PROGRAM_PATH = "";
 
         /*
@@ -28,7 +33,17 @@ namespace WordMemory
         public static void Initialize()
         {
 	        DataFileNameList = new List<string>(2048);
-	        loadFileListFromDataDir();
+
+            // 오디오 파일을 재생하기 위한 폴더가 없으면 생성.
+	        if (!Directory.Exists(AUDIO_DIRECTORY_PATH))
+	        {
+		        Directory.CreateDirectory(AUDIO_DIRECTORY_PATH);
+	        }
+
+	        WebClient = new WebClient();
+	        WebClient.DownloadFileCompleted += new AsyncCompletedEventHandler(OnCompleteFileDownload);
+
+            loadFileListFromDataDir();
         }
 
         /*
@@ -38,6 +53,8 @@ namespace WordMemory
         {
 	        DataFileNameList.Clear();
 	        DataFileNameList = null;
+	        WebClient.Dispose();
+	        WebClient = null;
         }
 
         /*
@@ -210,6 +227,16 @@ namespace WordMemory
             return true;
         }
 
+        public static void DownloadAudioFile(string wordName)
+        {
+	        WebClient.DownloadFileAsync(
+		        // url
+		        new System.Uri($"https://ssl.gstatic.com/dictionary/static/sounds/oxford/{wordName}--_us_1.mp3"),
+		        // dir to save
+		        $"{Application.StartupPath}\\{AUDIO_DIRECTORY_PATH}\\{wordName}.mp3"
+	        );
+        }
+
         /*
 		 *  데이터 디렉토리에서 저장된 데이터 파일들을 전부 읽어서 리스트로 저장합니다.
 		 */
@@ -232,5 +259,14 @@ namespace WordMemory
 		        DataFileNameList.Add(Path.GetFileNameWithoutExtension(file));
 	        }
         }
+
+        /*
+         *  파일이 다운로드 완료되면 호출되는 이벤트용 함수입니다.
+         *  메세지만 출력합니다.
+         */
+         private static void OnCompleteFileDownload(object sender, AsyncCompletedEventArgs e)
+         {
+	         MessageBox.Show("다운로드가 완료되었습니다.", "파일 매니저", MessageBoxButtons.OK, MessageBoxIcon.Information);
+         }
     }
 }

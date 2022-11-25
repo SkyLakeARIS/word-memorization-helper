@@ -250,7 +250,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("굴림", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.label5.Location = new System.Drawing.Point(297, 173);
+            this.label5.Location = new System.Drawing.Point(307, 197);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(98, 21);
             this.label5.TabIndex = 18;
@@ -259,7 +259,7 @@
             // panel1
             // 
             this.panel1.Controls.Add(this.AutoStartBox);
-            this.panel1.Location = new System.Drawing.Point(297, 197);
+            this.panel1.Location = new System.Drawing.Point(311, 221);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(136, 38);
             this.panel1.TabIndex = 15;
