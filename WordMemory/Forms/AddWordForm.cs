@@ -159,8 +159,8 @@ namespace WordMemory
             }
             else
             {
-	            MessageBox.Text = $"추가 실패 {Word.Text.ToLower()}";
-	            MessageBox.ForeColor = System.Drawing.Color.Green;
+	            MessageBox.Text = $"추가 실패 {Word.Text.ToLower()} \n 이미 추가된 단어이거나 로직 에러입니다.";
+	            MessageBox.ForeColor = System.Drawing.Color.Red;
             }
             meanList = null;
 
