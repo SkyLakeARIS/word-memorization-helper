@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Net;
 using System.Windows.Forms;
 using Microsoft.Win32;
 
@@ -16,7 +17,7 @@ namespace WordMemory
 
         private void SettingForm_Load(object sender, EventArgs e)
         {
-
+	        
             // Setting 클래스에서 정보 초기화
             // 1. 뷰모드 초기화
             switch (Setting.ViewMode)
