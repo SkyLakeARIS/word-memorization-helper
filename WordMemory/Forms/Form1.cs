@@ -250,8 +250,8 @@ namespace WordMemory
 	        mSecondData = null;
 	        mAudioPlayer.close();
             mAudioPlayer = null;
-            DialogResult = DialogResult.OK;
             mWordRefreshTimer.Dispose();
+            DialogResult = DialogResult.OK;
             Close();
         }
 
