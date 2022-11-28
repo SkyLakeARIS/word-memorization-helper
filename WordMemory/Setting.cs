@@ -64,7 +64,7 @@ namespace WordMemory
                 ViewMode = EViewMode.SHOW_ONLY_NOT_REMEMBER;
                 RefreshMode = ERefreshMode.TIMER;
                 RefreshTimeMilliseconds = REFRESH_TIME_MINUTES_DEFAULT;
-                AutoStart = EAutoStart.SET_AUTO_START;
+                AutoStart = EAutoStart.UNSET_AUTO_START;
                 streamWriter.Write(makeSettingDataToHexString());
                 streamWriter.Close();
 

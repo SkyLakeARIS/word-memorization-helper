@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Drawing;
-using System.Net;
+using System.Security.AccessControl;
 using System.Windows.Forms;
 using Microsoft.Win32;
+using IWshRuntimeLibrary;
+using File = System.IO.File;
 
 namespace WordMemory
 {
     public partial class SettingForm : Form
     {
-        public SettingForm()
+	    public SettingForm()
         {
             
             InitializeComponent();
@@ -17,7 +19,7 @@ namespace WordMemory
 
         private void SettingForm_Load(object sender, EventArgs e)
         {
-	        
+
             // Setting 클래스에서 정보 초기화
             // 1. 뷰모드 초기화
             switch (Setting.ViewMode)
@@ -47,8 +49,8 @@ namespace WordMemory
 	            break;
             default:
 	            Debug.Assert(false, $"RefreshMode 열거형 데이터가 잘못 되었습니다. {(Int32)Setting.RefreshMode}");
-	            MessageBox.Text = "데이터 표시에 문제가 발생했습니다.";
-	            MessageBox.ForeColor = Color.Red;
+	            MessageBoxForm.Text = "데이터 표시에 문제가 발생했습니다.";
+	            MessageBoxForm.ForeColor = Color.Red;
 	            break;
             }
 
@@ -67,8 +69,8 @@ namespace WordMemory
             }
 
             // 메세지 출력
-            MessageBox.Text = $"설정이 로드되었습니다.";
-            MessageBox.ForeColor = Color.Green;
+            MessageBoxForm.Text = $"설정이 로드되었습니다.";
+            MessageBoxForm.ForeColor = Color.Green;
 
             DirectoryBox.Text = $"현재 프로그램 디렉토리{Application.StartupPath}";
         }
@@ -103,16 +105,57 @@ namespace WordMemory
             // 3. 타이머 값 적용
             Setting.RefreshTimeMilliseconds = (Int32)InputTimerCount.Value;
 
-            // 4. 설정 값 저장
+            // 4. 자동 시작 모드 적용
+			// 64비트 환경에서 32비트 레지스트리를 다루는데 문제가 있는 것 같아 알아본 코드로 적용.
+            if (AutoStartBox.Checked)
+            {
+
+	            Setting.AutoStart = EAutoStart.SET_AUTO_START;
+	            using (var baseKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64))
+                {
+	                using (var subKey = baseKey.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.FullControl))
+	                {
+		                if (subKey != null)
+		                {
+			                //var value = subKey.GetValue("Somekey");
+			                subKey.SetValue(Application.ProductName, Application.ExecutablePath);
+			                subKey.Close();
+
+                        }
+                    }
+                }
+                // 2번째 방법 - 시작 프로그램에 바로가기 생성
+	            // createShortcut();
+            }
+            else
+            {
+	            Setting.AutoStart = EAutoStart.UNSET_AUTO_START;
+
+	            using (var baseKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64))
+	            {
+		            using (var subKey = baseKey.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.FullControl))
+		            {
+			            if (subKey != null)
+			            {
+				            subKey.DeleteValue(Application.ProductName, false);
+				            subKey.Close();
+                        }
+		            }
+	            }
+                
+	            // removeShortcut();
+            }
+
+            // 5. 설정 값 저장
             Setting.SaveSettingData();
 
-            MessageBox.Text = "설정이 저장되었습니다.";
-            MessageBox.ForeColor = Color.Green;
+            MessageBoxForm.Text = "설정이 저장되었습니다.";
+            MessageBoxForm.ForeColor = Color.Green;
         }
 
         private void btnClose_Click(object sender, EventArgs e)
         {
-            DialogResult = DialogResult.Cancel;
+	        DialogResult = DialogResult.Cancel;
         }
 
         private void btnExportWordData_Click(object sender, EventArgs e)
@@ -125,23 +168,34 @@ namespace WordMemory
 	        WordManager.ImportWordData();
         }
 
-        private void AutoStartBox_CheckedChanged(object sender, EventArgs e)
+        /*
+		*  시작폴더에 바로가기 파일을 만듭니다.
+		*/
+        private static void createShortcut()
         {
-            
-	        if (AutoStartBox.Checked)
-	        {
-		        Setting.AutoStart = EAutoStart.SET_AUTO_START;
+	        WshShell wshShell = new WshShell();
+	        IWshRuntimeLibrary.IWshShortcut shortcut;
+	        string startUpFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
 
-                //  Microsoft.Win32.Registry.LocalMachine 와 차이는 크게 없는 듯 하나 좀 더 알아볼 필요가 있음.
-                RegistryKey key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-                key.SetValue("WordMemory", Application.ExecutablePath);
-            }
-            else
-	        {
-		        Setting.AutoStart = EAutoStart.UNSET_AUTO_START;
-		        RegistryKey key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-		        key.DeleteValue("WordMemory", false);
-	        }
+	        // Create the shortcut
+            shortcut = (IWshRuntimeLibrary.IWshShortcut)wshShell.CreateShortcut($"{startUpFolderPath}\\WordMemorization.lnk");
+	        shortcut.TargetPath = Application.ExecutablePath;
+	        shortcut.WorkingDirectory = Application.StartupPath;
+	        shortcut.Description = "auto startup word-memorizaion";
+
+	        shortcut.Save();
+        }
+
+        /*
+		*  시작폴더의 바로가기 파일을 제거합니다.
+		*/
+        private static void removeShortcut()
+        {
+	        WshShell wshShell = new WshShell();
+	        IWshRuntimeLibrary.IWshShortcut shortcut;
+	        string startUpFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
+
+	        File.Delete($"{startUpFolderPath}\\WordMemorization.lnk");
         }
     }
 }

@@ -30,7 +30,6 @@
         {
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.btnExportWordData = new System.Windows.Forms.Button();
             this.btnImportWordData = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
@@ -44,7 +43,7 @@
             this.ViewModePanel = new System.Windows.Forms.Panel();
             this.RefreshModePanel = new System.Windows.Forms.Panel();
             this.InputTimerCount = new System.Windows.Forms.NumericUpDown();
-            this.MessageBox = new System.Windows.Forms.TextBox();
+            this.MessageBoxForm = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -223,18 +222,18 @@
             0,
             0});
             // 
-            // MessageBox
+            // MessageBoxForm
             // 
-            this.MessageBox.BackColor = System.Drawing.SystemColors.Menu;
-            this.MessageBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.MessageBox.Font = new System.Drawing.Font("굴림", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.MessageBox.Location = new System.Drawing.Point(95, 345);
-            this.MessageBox.Multiline = true;
-            this.MessageBox.Name = "MessageBox";
-            this.MessageBox.ReadOnly = true;
-            this.MessageBox.Size = new System.Drawing.Size(255, 52);
-            this.MessageBox.TabIndex = 16;
-            this.MessageBox.TabStop = false;
+            this.MessageBoxForm.BackColor = System.Drawing.SystemColors.Menu;
+            this.MessageBoxForm.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.MessageBoxForm.Font = new System.Drawing.Font("굴림", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.MessageBoxForm.Location = new System.Drawing.Point(95, 345);
+            this.MessageBoxForm.Multiline = true;
+            this.MessageBoxForm.Name = "MessageBoxForm";
+            this.MessageBoxForm.ReadOnly = true;
+            this.MessageBoxForm.Size = new System.Drawing.Size(255, 52);
+            this.MessageBoxForm.TabIndex = 16;
+            this.MessageBoxForm.TabStop = false;
             // 
             // label4
             // 
@@ -273,7 +272,6 @@
             this.AutoStartBox.TabIndex = 19;
             this.AutoStartBox.Text = "윈도우 시작시 실행";
             this.AutoStartBox.UseVisualStyleBackColor = true;
-            this.AutoStartBox.CheckedChanged += new System.EventHandler(this.AutoStartBox_CheckedChanged);
             // 
             // DirectoryBox
             // 
@@ -297,7 +295,7 @@
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.MessageBox);
+            this.Controls.Add(this.MessageBoxForm);
             this.Controls.Add(this.InputTimerCount);
             this.Controls.Add(this.RefreshModePanel);
             this.Controls.Add(this.ViewModePanel);
@@ -327,7 +325,6 @@
 
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
         private System.Windows.Forms.Button btnExportWordData;
         private System.Windows.Forms.Button btnImportWordData;
         private System.Windows.Forms.Label label3;
@@ -341,7 +338,7 @@
         private System.Windows.Forms.Panel ViewModePanel;
         private System.Windows.Forms.Panel RefreshModePanel;
         private System.Windows.Forms.NumericUpDown InputTimerCount;
-        private System.Windows.Forms.TextBox MessageBox;
+        private System.Windows.Forms.TextBox MessageBoxForm;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Panel panel1;
