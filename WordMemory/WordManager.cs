@@ -282,7 +282,9 @@ namespace WordMemory
          * 자동으로 저장됩니다.
 		 */
         public static void ImportWordData()
-	    {
+        {
+	        Int32 addedWordCount = 0;
+	        Int32 modifiedWordCount = 0;
 		    string importedDataString = string.Empty;
 			List<WordData> wordDataList = new List<WordData>(1024);
 			if (!FileManager.LoadImportDataOrEmpty(out importedDataString))
@@ -327,7 +329,8 @@ namespace WordMemory
 							foundDataOriginal.UpdateMeanData(wordDataList[wordCount].MeanList);
 							foundDataOriginal.UpdateMemo(wordDataList[wordCount].Memo);
 							foundDataOriginal.UpdateRememberType(wordDataList[wordCount].RememberType);
-                        }
+							++modifiedWordCount;
+						}
 
 						break;
 					case EImportOption.USE_MERGED_DATA:
@@ -335,6 +338,7 @@ namespace WordMemory
 						if (WordTable.FindWordDataOrNull(wordDataList[wordCount].WordName, out foundDataOriginal))
 						{
 							mergeWordData(ref foundDataOriginal, wordDataList[wordCount]);
+							++modifiedWordCount;
 						}
                         break;
 					default:
@@ -352,7 +356,7 @@ namespace WordMemory
 					// 추가되지 않은 데이터이므로 추가합니다.
 					// 추가로 임포트한(외부) 데이터이므로 외우지 않았다고 가정합니다.
 					AddWordData(wordDataList[wordCount].WordName, wordDataList[wordCount].MeanList, wordDataList[wordCount].Memo);
-
+					++addedWordCount;
                 }
 
                 NEXT_LOOP:
@@ -360,15 +364,16 @@ namespace WordMemory
                 // for end
             }
             // if end
+            MessageBox.Show($"임포트된 단어 {wordDataList.Count}개 중 {(addedWordCount)}개가 추가, {modifiedWordCount}개가 수정 되었습니다.", "워드 매니저", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
         }
 
 
-		// 임포트된 데이터를 기존 데이터에 추가합니다.
-	    // 뜻은 최대 16개까지 추가되고, 메모는 '<imported>'접두를 붙여 덧붙입니다.
-		// 이때의 경우, 최대 글자 제한은 무시합니다.
-		// 암기 여부는 포함되지 않습니다.
-	    private static void mergeWordData(ref WordData originalData, WordData importedData)
+        // 임포트된 데이터를 기존 데이터에 추가합니다.
+        // 뜻은 최대 16개까지 추가되고, 메모는 '<imported>'접두를 붙여 덧붙입니다.
+        // 이때의 경우, 최대 글자 제한은 무시합니다.
+        // 암기 여부는 포함되지 않습니다.
+        private static void mergeWordData(ref WordData originalData, WordData importedData)
 	    {
 
             // 원본을 이어받으므로 별도 작업은 필요없을 것.
