@@ -30,7 +30,6 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.WordFirst = new System.Windows.Forms.TextBox();
-            this.fontDialog1 = new System.Windows.Forms.FontDialog();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -412,7 +411,6 @@
         #endregion
 
         private System.Windows.Forms.TextBox WordFirst;
-        private System.Windows.Forms.FontDialog fontDialog1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
