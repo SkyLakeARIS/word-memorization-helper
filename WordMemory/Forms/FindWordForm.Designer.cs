@@ -31,7 +31,8 @@
             System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
             "",
             ""}, -1);
-            this.MessageBox = new System.Windows.Forms.TextBox();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FindWordForm));
+            this.MessageBoxForm = new System.Windows.Forms.TextBox();
             this.btnClose = new System.Windows.Forms.Button();
             this.btnFindWord = new System.Windows.Forms.Button();
             this.LabelMemo = new System.Windows.Forms.Label();
@@ -48,21 +49,22 @@
             this.rbtnNotRemember = new System.Windows.Forms.RadioButton();
             this.rbtnRemember = new System.Windows.Forms.RadioButton();
             this.label7 = new System.Windows.Forms.Label();
+            this.btnPronounceWord = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // MessageBox
+            // MessageBoxForm
             // 
-            this.MessageBox.BackColor = System.Drawing.SystemColors.Menu;
-            this.MessageBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.MessageBox.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.MessageBox.Location = new System.Drawing.Point(117, 404);
-            this.MessageBox.Multiline = true;
-            this.MessageBox.Name = "MessageBox";
-            this.MessageBox.ReadOnly = true;
-            this.MessageBox.Size = new System.Drawing.Size(233, 69);
-            this.MessageBox.TabIndex = 29;
-            this.MessageBox.TabStop = false;
+            this.MessageBoxForm.BackColor = System.Drawing.SystemColors.Menu;
+            this.MessageBoxForm.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.MessageBoxForm.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.MessageBoxForm.Location = new System.Drawing.Point(117, 404);
+            this.MessageBoxForm.Multiline = true;
+            this.MessageBoxForm.Name = "MessageBoxForm";
+            this.MessageBoxForm.ReadOnly = true;
+            this.MessageBoxForm.Size = new System.Drawing.Size(233, 69);
+            this.MessageBoxForm.TabIndex = 29;
+            this.MessageBoxForm.TabStop = false;
             // 
             // btnClose
             // 
@@ -233,17 +235,28 @@
             this.label7.Size = new System.Drawing.Size(0, 24);
             this.label7.TabIndex = 22;
             // 
+            // btnPronounceWord
+            // 
+            this.btnPronounceWord.Image = ((System.Drawing.Image)(resources.GetObject("btnPronounceWord.Image")));
+            this.btnPronounceWord.Location = new System.Drawing.Point(168, 27);
+            this.btnPronounceWord.Name = "btnPronounceWord";
+            this.btnPronounceWord.Size = new System.Drawing.Size(40, 24);
+            this.btnPronounceWord.TabIndex = 35;
+            this.btnPronounceWord.UseVisualStyleBackColor = true;
+            this.btnPronounceWord.Click += new System.EventHandler(this.btnPronounceWord_Click);
+            // 
             // FindWordForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(462, 527);
+            this.Controls.Add(this.btnPronounceWord);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.btnModifyWord);
             this.Controls.Add(this.WordClassCombo);
             this.Controls.Add(this.InputMean);
             this.Controls.Add(this.btnAddMean);
-            this.Controls.Add(this.MessageBox);
+            this.Controls.Add(this.MessageBoxForm);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.btnFindWord);
             this.Controls.Add(this.LabelMemo);
@@ -264,7 +277,7 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox MessageBox;
+        private System.Windows.Forms.TextBox MessageBoxForm;
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.Button btnFindWord;
         private System.Windows.Forms.Label LabelMemo;
@@ -281,5 +294,6 @@
         private System.Windows.Forms.RadioButton rbtnNotRemember;
         private System.Windows.Forms.RadioButton rbtnRemember;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Button btnPronounceWord;
     }
 }

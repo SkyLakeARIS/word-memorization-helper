@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Windows.Forms;
 using WordMemory.BindingData;
 using WordMemory.Data;
+using WMPLib;
 
 namespace WordMemory
 {
@@ -10,6 +13,8 @@ namespace WordMemory
     {
 	    private WordData mFoundData;
 	    private bool mIsModifiyWord;
+	    private WindowsMediaPlayer mAudioPlayer = null;
+
         public FindWordForm()
         {
             InitializeComponent();
@@ -18,6 +23,10 @@ namespace WordMemory
         private void FindWordForm_Load(object sender, EventArgs e)
         {
             // 초기 세팅
+            mAudioPlayer = new WMPLib.WindowsMediaPlayer();
+            mAudioPlayer.PlayStateChange += new WMPLib._WMPOCXEvents_PlayStateChangeEventHandler(onAudioPlayerStateChange);
+
+
             ColumnHeader header1 = new ColumnHeader();
             header1.Text = "";
             header1.Name = "Mean";
@@ -48,15 +57,15 @@ namespace WordMemory
         {
             if(string.IsNullOrWhiteSpace(Word.Text) || Word.Text == string.Empty)
             {
-                MessageBox.Text = "단어를 입력해 주세요.";
-                MessageBox.ForeColor = System.Drawing.Color.Red;
+                MessageBoxForm.Text = "단어를 입력해 주세요.";
+                MessageBoxForm.ForeColor = System.Drawing.Color.Red;
                 return;
             }
 
             if (Word.Text.Length > WordManager.WORD_STRING_LENGTH_LIMIT)
             {
-	            MessageBox.Text = $"입력 가능한 단어 길이는 {WordManager.WORD_STRING_LENGTH_LIMIT}자 입니다. 현 {Word.Text.Length}자";
-	            MessageBox.ForeColor = System.Drawing.Color.Red;
+	            MessageBoxForm.Text = $"입력 가능한 단어 길이는 {WordManager.WORD_STRING_LENGTH_LIMIT}자 입니다. 현 {Word.Text.Length}자";
+	            MessageBoxForm.ForeColor = System.Drawing.Color.Red;
 	            return;
             }
 
@@ -87,20 +96,22 @@ namespace WordMemory
                 }
 
                 // 안내 메세지
-                MessageBox.Text = "수정시 단어 이름을 제외한 나머지 내용만 반영됩니다.";
-	            MessageBox.ForeColor = System.Drawing.Color.Green;
+                MessageBoxForm.Text = "수정시 단어 이름을 제외한 나머지 내용만 반영됩니다.";
+	            MessageBoxForm.ForeColor = System.Drawing.Color.Green;
             }
             else
             {
 	            // 안내 메세지
-	            MessageBox.Text = "검색 결과가 없습니다. 단어를 확인하세요.(대소문자를 구분하지 않습니다.)";
-	            MessageBox.ForeColor = System.Drawing.Color.Red;
+	            MessageBoxForm.Text = "검색 결과가 없습니다. 단어를 확인하세요.(대소문자를 구분하지 않습니다.)";
+	            MessageBoxForm.ForeColor = System.Drawing.Color.Red;
             }
         }
 
         private void btnClose_Click(object sender, EventArgs e)
         {
-	        mFoundData = null;
+	        mAudioPlayer.close();
+	        mAudioPlayer = null;
+            mFoundData = null;
 	        if (mIsModifiyWord)
 	        {
 		        DialogResult = DialogResult.OK;
@@ -115,36 +126,36 @@ namespace WordMemory
         {
 	        if (mFoundData == null)
 	        {
-		        MessageBox.Text = "단어를 먼저 검색하여 데이터를 초기화하세요.";
-		        MessageBox.ForeColor = System.Drawing.Color.Red;
+		        MessageBoxForm.Text = "단어를 먼저 검색하여 데이터를 초기화하세요.";
+		        MessageBoxForm.ForeColor = System.Drawing.Color.Red;
                 return;
 	        }
 
             if(string.IsNullOrWhiteSpace(InputMean.Text) || InputMean.Text == string.Empty)
             {
-                MessageBox.Text = "뜻을 입력해 주세요.";
-                MessageBox.ForeColor = System.Drawing.Color.Red;
+                MessageBoxForm.Text = "뜻을 입력해 주세요.";
+                MessageBoxForm.ForeColor = System.Drawing.Color.Red;
                 return;
             }
             
             if(WordClassCombo.SelectedIndex == -1 || WordClassData.DataList[WordClassCombo.SelectedIndex].WordClassType == EWordClass.NULL)
             {
-                MessageBox.Text = "품사를 선택해 주세요.";
-                MessageBox.ForeColor = System.Drawing.Color.Red;
+                MessageBoxForm.Text = "품사를 선택해 주세요.";
+                MessageBoxForm.ForeColor = System.Drawing.Color.Red;
                 return;
             }
 
             if (MeanListView.Items.Count >= WordManager.MEAN_COUNT_LIMIT)
             {
-	            MessageBox.Text = $"뜻 등록은 최대 {WordManager.MEAN_COUNT_LIMIT}개 입니다.";
-	            MessageBox.ForeColor = System.Drawing.Color.Red;
+	            MessageBoxForm.Text = $"뜻 등록은 최대 {WordManager.MEAN_COUNT_LIMIT}개 입니다.";
+	            MessageBoxForm.ForeColor = System.Drawing.Color.Red;
 	            return;
             }
 
             if (InputMean.Text.Length > WordManager.MEAN_STRING_LENGTH_LIMIT)
             {
-	            MessageBox.Text = $"뜻 최대 입력 길이는 {WordManager.MEAN_STRING_LENGTH_LIMIT}자입니다. 현{InputMean.Text.Length}자";
-	            MessageBox.ForeColor = System.Drawing.Color.Red;
+	            MessageBoxForm.Text = $"뜻 최대 입력 길이는 {WordManager.MEAN_STRING_LENGTH_LIMIT}자입니다. 현{InputMean.Text.Length}자";
+	            MessageBoxForm.ForeColor = System.Drawing.Color.Red;
 	            return;
             }
 
@@ -172,15 +183,15 @@ namespace WordMemory
         {
             if (string.IsNullOrEmpty(Word.Text) || string.IsNullOrWhiteSpace(Word.Text))
             {
-                MessageBox.Text = "단어를 입력해 주세요.";
-                MessageBox.ForeColor = System.Drawing.Color.Red;
+                MessageBoxForm.Text = "단어를 입력해 주세요.";
+                MessageBoxForm.ForeColor = System.Drawing.Color.Red;
                 return;
             }
 
             if (MeanListView.Items.Count <= 0)
             {
-	            MessageBox.Text = $"뜻은 최소 하나 이상 등록해야 합니다.";
-	            MessageBox.ForeColor = System.Drawing.Color.Red;
+	            MessageBoxForm.Text = $"뜻은 최소 하나 이상 등록해야 합니다.";
+	            MessageBoxForm.ForeColor = System.Drawing.Color.Red;
 	            return;
             }
 
@@ -229,8 +240,8 @@ namespace WordMemory
             mFoundData = null;
             mIsModifiyWord = true;
 
-            MessageBox.Text = $"수정 되었습니다.";
-            MessageBox.ForeColor = System.Drawing.Color.Green;
+            MessageBoxForm.Text = $"수정 되었습니다.";
+            MessageBoxForm.ForeColor = System.Drawing.Color.Green;
         }
 
         private void InputMean_KeyPress(object sender, KeyPressEventArgs e)
@@ -257,8 +268,8 @@ namespace WordMemory
 
             MeanListView.EndUpdate();
 
-            MessageBox.Text = selectedData;
-            MessageBox.ForeColor = System.Drawing.Color.Green;
+            MessageBoxForm.Text = selectedData;
+            MessageBoxForm.ForeColor = System.Drawing.Color.Green;
         }
 
         private void rbtnRememberFirst_CheckedChanged(object sender, EventArgs e)
@@ -271,5 +282,33 @@ namespace WordMemory
 	        rbtnNotRemember.Checked = true;
         }
 
+        private void btnPronounceWord_Click(object sender, EventArgs e)
+        {
+	        audioPlayerPlay(Word.Text);
+        }
+
+        private void audioPlayerPlay(string wordName)
+        {
+	        if (!File.Exists($"{FileManager.AUDIO_DIRECTORY_PATH}\\{wordName}.mp3"))
+	        {
+		        if (DialogResult.Yes == MessageBox.Show("음성 파일을 받으시겠습니까?", "음성 파일이 존재하지 않습니다!", MessageBoxButtons.YesNo, MessageBoxIcon.Information))
+		        {
+			        FileManager.DownloadAudioFile(wordName);
+		        }
+	        }
+	        else
+	        {
+		        mAudioPlayer.URL = $"{Application.StartupPath}//{FileManager.AUDIO_DIRECTORY_PATH}//{wordName}.mp3";
+		        mAudioPlayer.controls.play();
+	        }
+        }
+
+        private void onAudioPlayerStateChange(int newState)
+        {
+	        if ((WMPLib.WMPPlayState)newState == WMPLib.WMPPlayState.wmppsStopped)
+	        {
+		        mAudioPlayer.close();
+	        }
+        }
     }
 }
