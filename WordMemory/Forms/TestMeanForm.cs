@@ -105,12 +105,16 @@ namespace WordMemory
 	            MessageBox.ForeColor = System.Drawing.Color.Green;
                 
 	            mWordData.UpdateRememberType(ERememberType.NOT_REMEMBER);
+                WordManager.MoveWordDataToNotRememberList(mWordData.WordName);
             }
-            InputMean.Text = string.Empty;
 
+            InputMean.Text = string.Empty;
             mWordData = null;
+            MeanListView.Items.Clear();
 
             // 다음 문제
+            // 정답시 타이머로 2-3초 딜레이를 준 다음 다음문제로 넘어가도록 하는 것도 좋을 듯.
+
             updataWordData();
         }
 

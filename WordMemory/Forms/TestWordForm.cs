@@ -36,7 +36,7 @@ namespace WordMemory
 
         private void btnSubmit_Click(object sender, EventArgs e)
         {
-            if(string.IsNullOrWhiteSpace(Word.Text) || Word.Text == string.Empty)
+	        if(string.IsNullOrWhiteSpace(Word.Text) || Word.Text == string.Empty)
             {
                 MessageBox.Text = "단어를 입력해 주세요.";
                 MessageBox.ForeColor = System.Drawing.Color.Red;
@@ -50,6 +50,8 @@ namespace WordMemory
 	            return;
             }
 
+            Word.Text = Word.Text.ToLower();
+
             if (mWordData.WordName.Equals(Word.Text))
             {
 	            MessageBox.Text = "정답입니다.";
@@ -60,10 +62,14 @@ namespace WordMemory
 	            MessageBox.Text = "오답입니다. 미암기로 분류됩니다.";
 	            MessageBox.ForeColor = System.Drawing.Color.Red;
                 mWordData.UpdateRememberType(ERememberType.NOT_REMEMBER);
+                WordManager.MoveWordDataToNotRememberList(mWordData.WordName);
             }
 
             Word.Text = string.Empty;
             mWordData = null;
+            MeanListView.Items.Clear();
+
+            // 정답시 타이머로 2-3초 딜레이를 준 다음 다음문제로 넘어가도록 하는 것도 좋을 듯.
             updataWordData();
         }
 
@@ -105,7 +111,6 @@ namespace WordMemory
 
 	        // UI로 데이터 갱신
 	        MeanListView.BeginUpdate();
-	        MeanListView.Items.Clear();
 	        foreach (string mean in mWordData.MeanList)
 	        {
 		        MeanListView.Items.Add(mean);

@@ -282,7 +282,6 @@
             this.rbtnNotRememberFirst.TabStop = true;
             this.rbtnNotRememberFirst.Text = "미암기";
             this.rbtnNotRememberFirst.UseVisualStyleBackColor = true;
-            this.rbtnNotRememberFirst.CheckedChanged += new System.EventHandler(this.rbtnNotRememberFirst_CheckedChanged);
             // 
             // rbtnRememberFirst
             // 
@@ -325,7 +324,6 @@
             this.rbtnNotRememberSecond.TabStop = true;
             this.rbtnNotRememberSecond.Text = "미암기";
             this.rbtnNotRememberSecond.UseVisualStyleBackColor = true;
-            this.rbtnNotRememberSecond.CheckedChanged += new System.EventHandler(this.rbtnNotRememberSecond_CheckedChanged);
             // 
             // rbtnRememberSecond
             // 

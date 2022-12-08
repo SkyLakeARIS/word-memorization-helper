@@ -212,7 +212,6 @@
             this.rbtnNotRemember.TabStop = true;
             this.rbtnNotRemember.Text = "미암기";
             this.rbtnNotRemember.UseVisualStyleBackColor = true;
-            this.rbtnNotRemember.CheckedChanged += new System.EventHandler(this.rbtnNotRememberFirst_CheckedChanged);
             // 
             // rbtnRemember
             // 
