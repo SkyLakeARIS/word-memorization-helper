@@ -249,8 +249,10 @@ namespace WordMemory
 	        mFirstData = null;
 	        mSecondData = null;
 	        mAudioPlayer.close();
-            mAudioPlayer = null;
+	        mAudioPlayer = null;
+	        mWordRefreshTimer.Tick -= btnRefreshWord_Click;
             mWordRefreshTimer.Dispose();
+            mWordRefreshTimer = null;
             DialogResult = DialogResult.OK;
             Close();
         }

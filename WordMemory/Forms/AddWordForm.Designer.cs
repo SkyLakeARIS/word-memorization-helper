@@ -191,7 +191,9 @@
             this.Controls.Add(this.MeanListView);
             this.Controls.Add(this.Memo);
             this.Controls.Add(this.Word);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "AddWordForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "단어 추가";
             this.Load += new System.EventHandler(this.AddWordForm_Load);
             this.ResumeLayout(false);

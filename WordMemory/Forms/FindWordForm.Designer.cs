@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem(new string[] {
             "",
             ""}, -1);
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FindWordForm));
@@ -121,7 +121,7 @@
             this.MeanListView.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.MeanListView.HideSelection = false;
             this.MeanListView.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1});
+            listViewItem2});
             this.MeanListView.Location = new System.Drawing.Point(117, 129);
             this.MeanListView.MultiSelect = false;
             this.MeanListView.Name = "MeanListView";
@@ -264,7 +264,9 @@
             this.Controls.Add(this.MeanListView);
             this.Controls.Add(this.Memo);
             this.Controls.Add(this.Word);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "FindWordForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "단어 찾기";
             this.Load += new System.EventHandler(this.FindWordForm_Load);
             this.panel1.ResumeLayout(false);

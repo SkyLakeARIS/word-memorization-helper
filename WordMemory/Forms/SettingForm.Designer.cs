@@ -306,7 +306,10 @@
             this.Controls.Add(this.btnExportWordData);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
+            this.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "SettingForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "환경설정";
             this.Load += new System.EventHandler(this.SettingForm_Load);
             this.ViewModePanel.ResumeLayout(false);

@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem(new string[] {
             "",
             ""}, -1);
             this.btnFindWord = new System.Windows.Forms.Button();
@@ -121,7 +121,7 @@
             this.MeanListView.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.MeanListView.HideSelection = false;
             this.MeanListView.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1});
+            listViewItem2});
             this.MeanListView.Location = new System.Drawing.Point(100, 130);
             this.MeanListView.MultiSelect = false;
             this.MeanListView.Name = "MeanListView";
@@ -166,7 +166,9 @@
             this.Controls.Add(this.MeanListView);
             this.Controls.Add(this.Memo);
             this.Controls.Add(this.Word);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "RemoveWordForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "단어 삭제";
             this.Load += new System.EventHandler(this.RemoveWordForm_Load);
             this.ResumeLayout(false);

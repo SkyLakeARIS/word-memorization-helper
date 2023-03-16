@@ -128,7 +128,9 @@
             this.Controls.Add(this.LabelWord);
             this.Controls.Add(this.MeanListView);
             this.Controls.Add(this.Word);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "TestWordForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "단어 맞추기 시험";
             this.Load += new System.EventHandler(this.TestWordForm_Load);
             this.ResumeLayout(false);
