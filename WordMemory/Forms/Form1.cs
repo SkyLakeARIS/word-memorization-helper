@@ -251,10 +251,10 @@ namespace WordMemory
 	        mAudioPlayer.close();
 	        mAudioPlayer = null;
 	        mWordRefreshTimer.Tick -= btnRefreshWord_Click;
-            mWordRefreshTimer.Dispose();
-            mWordRefreshTimer = null;
-            DialogResult = DialogResult.OK;
-            Close();
+          mWordRefreshTimer.Dispose();
+          mWordRefreshTimer = null;
+          DialogResult = DialogResult.OK;
+          Close();
         }
 
         private void rbtnRememberFirst_CheckedChanged(object sender, EventArgs e)

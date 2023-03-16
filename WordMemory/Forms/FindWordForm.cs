@@ -314,7 +314,6 @@ namespace WordMemory
 		        MessageBoxForm.ForeColor = System.Drawing.Color.Red;
                 return;
 	        }
-
 	        audioPlayerPlay(Word.Text);
         }
 

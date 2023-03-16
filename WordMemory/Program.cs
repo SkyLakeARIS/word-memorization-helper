@@ -31,7 +31,7 @@ namespace WordMemory
                 info.Arguments = ""; // ? - 인자 전달 가능.
 
                 Process.Start(info);
-                
+              
                 info = null;
             }
             else // 관리자 모드로 실행.
@@ -55,6 +55,7 @@ namespace WordMemory
                 WordClassData.Release();
                 FileManager.Release();
                 mainForm = null;
+
             }
         }
 

@@ -367,7 +367,6 @@ namespace WordMemory
             }
             // if end
             MessageBox.Show($"임포트된 단어 {wordDataList.Count}개 중 {(addedWordCount)}개가 추가, {modifiedWordCount}개가 수정 되었습니다.", "워드 매니저", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
         }
 
 		/*
