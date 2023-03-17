@@ -26,7 +26,9 @@ namespace WordMemory
         // -> 해시 값을 가지면 중복된 해시에 대해서 처리가 까다로우므로, 단어명을 들고 있는 것으로 변경.
         private static List<string> rememberList;
 	    private static List<string> notRememberList;
+
 		// 메인 폼, 테스트 폼에서 단어 데이터를 요청할 때 사용하기 위해 인덱스를 저장.
+		// 테스트 용의 인덱스를 따로 관리하는 것이 더 좋을 것으로 판단됨.
 	    private static Int32 currentRememberListIndex;
 		private static Int32 currentNotRememberListIndex;
 
@@ -365,9 +367,67 @@ namespace WordMemory
             }
             // if end
             MessageBox.Show($"임포트된 단어 {wordDataList.Count}개 중 {(addedWordCount)}개가 추가, {modifiedWordCount}개가 수정 되었습니다.", "워드 매니저", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
         }
 
+		/*
+		 * 단어 데이터를 미암기 단어 리스트에서 암기 단어 리스트로 이동합니다.
+		 * 사용자가 암기했다고 체크했을 때.
+		 */
+		public static void MoveWordDataToRememberList(string wordName)
+		{
+			// 미암기->암기로 이동전에 미암기에 속하는 데이터인지 확인합니다.
+			if (!notRememberList.Contains(wordName))
+			{
+				Debug.Assert(false, $"존재하지 않는 데이터를 옮기려고 합니다. : {wordName}");
+
+                return;
+			}
+
+			Debug.Assert(!rememberList.Contains(wordName), "이미 암기된 데이터를 암기리스트에 추가하려 합니다.");
+
+			notRememberList.Remove(wordName);
+			rememberList.Add(wordName);
+
+            // 옮겨진 리스트의 개수가 줄었으므로, 미암기 리스트의 인덱스 위치 변수를 재계산.
+            if (notRememberList.Count > 0)
+            {
+	            currentNotRememberListIndex = currentNotRememberListIndex % notRememberList.Count;
+            }
+            else
+            {
+	            currentNotRememberListIndex = 0;
+            }
+        }
+
+		/*
+		 * 단어 데이터를 암기 단어 리스트에서 미암기 단어 리스트로 이동합니다.
+		 * 사용자가 암기하지 못 했다고 체크했을 때.
+		 */
+		public static void MoveWordDataToNotRememberList(string wordName)
+		{
+			// 암기->미암기로 이동전에 암기에 속하는 데이터인지 확인합니다.
+			if (!rememberList.Contains(wordName))
+			{
+				Debug.Assert(false, $"존재하지 않는 데이터를 옮기려고 합니다. : {wordName}");
+
+				return;
+			}
+
+			Debug.Assert(!notRememberList.Contains(wordName), "이미 암기된 데이터를 암기리스트에 추가하려 합니다.");
+
+			rememberList.Remove(wordName);
+			notRememberList.Add(wordName);
+			
+			// 옮겨진 리스트의 개수가 줄었으므로, 암기 리스트의 인덱스 위치 변수를 재계산.
+			if (rememberList.Count > 0)
+			{
+				currentRememberListIndex = currentRememberListIndex % rememberList.Count;
+			}
+			else
+			{
+				currentRememberListIndex = 0;
+			}
+        }
 
         // 임포트된 데이터를 기존 데이터에 추가합니다.
         // 뜻은 최대 16개까지 추가되고, 메모는 '<imported>'접두를 붙여 덧붙입니다.

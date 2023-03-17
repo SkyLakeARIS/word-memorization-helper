@@ -154,7 +154,9 @@
             this.Controls.Add(this.LabelWord);
             this.Controls.Add(this.MeanListView);
             this.Controls.Add(this.Word);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "TestMeanForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "뜻 맞추기 시험";
             this.Load += new System.EventHandler(this.TestMeanForm_Load);
             this.ResumeLayout(false);

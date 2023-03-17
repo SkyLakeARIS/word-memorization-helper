@@ -122,7 +122,9 @@
             this.Controls.Add(this.rbtnUseMerged);
             this.Controls.Add(this.rbtnUseImportData);
             this.Controls.Add(this.rbtnUseOriginalData);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "CheckImportDataSetting";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "데이터 임포트 설정";
             this.Load += new System.EventHandler(this.CheckImportDataSetting_Load);
             this.ResumeLayout(false);

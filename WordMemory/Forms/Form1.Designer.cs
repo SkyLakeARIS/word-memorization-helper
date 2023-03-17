@@ -282,7 +282,6 @@
             this.rbtnNotRememberFirst.TabStop = true;
             this.rbtnNotRememberFirst.Text = "미암기";
             this.rbtnNotRememberFirst.UseVisualStyleBackColor = true;
-            this.rbtnNotRememberFirst.CheckedChanged += new System.EventHandler(this.rbtnNotRememberFirst_CheckedChanged);
             // 
             // rbtnRememberFirst
             // 
@@ -325,7 +324,6 @@
             this.rbtnNotRememberSecond.TabStop = true;
             this.rbtnNotRememberSecond.Text = "미암기";
             this.rbtnNotRememberSecond.UseVisualStyleBackColor = true;
-            this.rbtnNotRememberSecond.CheckedChanged += new System.EventHandler(this.rbtnNotRememberSecond_CheckedChanged);
             // 
             // rbtnRememberSecond
             // 
@@ -396,7 +394,9 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.WordFirst);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "MainForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "단어 암기 도우미";
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.panel1.ResumeLayout(false);

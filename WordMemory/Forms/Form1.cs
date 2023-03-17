@@ -249,71 +249,78 @@ namespace WordMemory
 	        mFirstData = null;
 	        mSecondData = null;
 	        mAudioPlayer.close();
-            mAudioPlayer = null;
-            mWordRefreshTimer.Dispose();
-            DialogResult = DialogResult.OK;
-            Close();
+	        mAudioPlayer = null;
+	        mWordRefreshTimer.Tick -= btnRefreshWord_Click;
+          mWordRefreshTimer.Dispose();
+          mWordRefreshTimer = null;
+          DialogResult = DialogResult.OK;
+          Close();
         }
 
         private void rbtnRememberFirst_CheckedChanged(object sender, EventArgs e)
         {
-	        if (mFirstData == null)
+	        if (rbtnRememberFirst.Checked)
 	        {
-		        return;
+		        changeRememberTypeOfWordData(mFirstData, ERememberType.REMEMBER);
 	        }
-
-            if (mFirstData.RememberType != ERememberType.REMEMBER)
+            else
 	        {
-                mFirstData.UpdateRememberType(ERememberType.REMEMBER);
-	        }
-        }
-
-        private void rbtnNotRememberFirst_CheckedChanged(object sender, EventArgs e)
-        {
-	        if (mFirstData == null)
-	        {
-		        return;
-	        }
-
-            if (mFirstData.RememberType != ERememberType.NOT_REMEMBER)
-	        {
-		        mFirstData.UpdateRememberType(ERememberType.NOT_REMEMBER);
+		        changeRememberTypeOfWordData(mFirstData, ERememberType.NOT_REMEMBER);
 	        }
         }
+
 
         private void rbtnRememberSecond_CheckedChanged(object sender, EventArgs e)
         {
-	        if (mSecondData == null)
+	        if (rbtnRememberSecond.Checked)
 	        {
-		        return;
+		        changeRememberTypeOfWordData(mSecondData, ERememberType.REMEMBER);
 	        }
-            if (mSecondData.RememberType != ERememberType.REMEMBER)
+	        else
 	        {
-		        mSecondData.UpdateRememberType(ERememberType.REMEMBER);
+		        changeRememberTypeOfWordData(mSecondData, ERememberType.NOT_REMEMBER);
 	        }
         }
 
-        private void rbtnNotRememberSecond_CheckedChanged(object sender, EventArgs e)
+
+        private void changeRememberTypeOfWordData(WordData word, ERememberType newType)
         {
-	        if (mSecondData == null)
+	        if (word == null)
 	        {
 		        return;
 	        }
 
-	        if (mSecondData.RememberType != ERememberType.NOT_REMEMBER)
+	        if (word.RememberType != newType)
 	        {
-		        mSecondData.UpdateRememberType(ERememberType.NOT_REMEMBER);
+		        word.UpdateRememberType(newType);
+
+		        if (newType == ERememberType.NOT_REMEMBER)
+		        {
+			        WordManager.MoveWordDataToNotRememberList(word.WordName);
+		        }
+                else
+		        {
+			        WordManager.MoveWordDataToRememberList(word.WordName);
+		        }
 	        }
         }
-
         private void btnPronounceWordFirst_Click(object sender, EventArgs e)
         {
+	        if (mFirstData == null)
+	        {
+		        return;
+	        }
+
 	        audioPlayerPlay(WordFirst.Text);
         }
 
         private void btnPronounceWordSecond_Click(object sender, EventArgs e)
         {
-	        audioPlayerPlay(WordSecond.Text);
+	        if (mSecondData == null)
+	        {
+		        return;
+	        }
+            audioPlayerPlay(WordSecond.Text);
         }
 
         private void audioPlayerPlay(string wordName)

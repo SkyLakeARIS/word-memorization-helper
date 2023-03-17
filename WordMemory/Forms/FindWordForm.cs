@@ -274,16 +274,46 @@ namespace WordMemory
 
         private void rbtnRememberFirst_CheckedChanged(object sender, EventArgs e)
         {
-	        rbtnRemember.Checked = true;
+	        if (rbtnRemember.Checked)
+	        {
+		        changeRememberTypeOfWordData(ERememberType.REMEMBER);
+	        }
+	        else
+	        {
+		        changeRememberTypeOfWordData(ERememberType.NOT_REMEMBER);
+	        }
         }
 
-        private void rbtnNotRememberFirst_CheckedChanged(object sender, EventArgs e)
+        private void changeRememberTypeOfWordData(ERememberType newType)
         {
-	        rbtnNotRemember.Checked = true;
+	        if (mFoundData == null)
+	        {
+		        return;
+	        }
+
+	        if (mFoundData.RememberType != newType)
+	        {
+		        mFoundData.UpdateRememberType(newType);
+
+                if (newType == ERememberType.REMEMBER)
+                {
+                    WordManager.MoveWordDataToRememberList(mFoundData.WordName);
+                }
+                else
+                {
+	                WordManager.MoveWordDataToNotRememberList(mFoundData.WordName);
+                }
+            }
         }
 
         private void btnPronounceWord_Click(object sender, EventArgs e)
         {
+	        if (mFoundData == null)
+	        {
+		        MessageBoxForm.Text = "먼저 검색하여 단어 데이터를 초기화 하세요.";
+		        MessageBoxForm.ForeColor = System.Drawing.Color.Red;
+                return;
+	        }
 	        audioPlayerPlay(Word.Text);
         }
 

@@ -71,7 +71,9 @@
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.btnStartMeanTest);
             this.Controls.Add(this.btnStartWordTest);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "TestForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "테스트 모드 선택";
             this.Load += new System.EventHandler(this.TestForm_Load);
             this.ResumeLayout(false);
